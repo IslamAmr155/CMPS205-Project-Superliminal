@@ -29,7 +29,7 @@ bool our::ShaderProgram::attach(const std::string &filename, GLenum type) const 
     //Create a shader object
     GLuint shader = glCreateShader(type);
 
-    //Attach the shader source code to the shader object
+    //Attach the null-terminated shader source code to the shader object
     glShaderSource(shader, 1, &sourceCStr, nullptr);
 
     //Compile the shader
@@ -46,7 +46,8 @@ bool our::ShaderProgram::attach(const std::string &filename, GLenum type) const 
     //Attach the shader to the program
     glAttachShader(program, shader);
 
-    //Delete the shader object -> COMMENT: Should I delete the shader object here?
+    //Delete the shader object as the program now owns the shader's code
+    //and there is no need the individual shader object
     glDeleteShader(shader);
 
     //We return true if the compilation succeeded

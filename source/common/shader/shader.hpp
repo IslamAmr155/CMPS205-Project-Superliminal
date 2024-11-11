@@ -1,6 +1,7 @@
 #ifndef SHADER_HPP
 #define SHADER_HPP
 
+#include <iostream>
 #include <string>
 
 #include <glad/gl.h>
@@ -35,7 +36,13 @@ namespace our {
 
         GLuint getUniformLocation(const std::string &name) {
             //TODO: (Req 1) Return the location of the uniform with the given name
-            return glGetUniformLocation(program, name.c_str());
+            GLuint location = glGetUniformLocation(program, name.c_str());
+
+            if (location == -1) {
+                std::cerr << "Warning: uniform '" << name << "' not found or not used in shader program." << std::endl;
+            }
+            
+            return location;
         }
 
         void set(const std::string &uniform, GLfloat value) {
@@ -77,7 +84,7 @@ namespace our {
         ShaderProgram(const ShaderProgram&) = delete;
         ShaderProgram& operator=(const ShaderProgram&) = delete;
         //Question: Why do we delete the copy constructor and assignment operator?
-        //Answer: We delete the copy constructor and assignment operator because we don't want to have multiple instances of the same shader program.
+        //Answer: We delete the copy constructor and assignment operator because we don't want to have multiple copies of the same shader program. Each shaderProgram uniquely represents a pipelines of shaders which are read from the config file (vertex shader and fragment shader) to be executed when the program is used.
     };
 
 }

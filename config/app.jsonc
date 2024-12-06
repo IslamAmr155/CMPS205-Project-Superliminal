@@ -304,5 +304,397 @@
                 ]
             }
         ]
+    },
+    "scene0": {
+        "renderer":{
+            "sky": "assets/Texture2D/Sky_Night Moon Low CloudsLayer_Cam_0_Front+Z.png",
+            "postprocess": "assets/shaders/postprocess/vignette.frag"
+        },
+        "assets":{
+            "shaders":{
+                "tinted":{
+                    "vs":"assets/shaders/tinted.vert",
+                    "fs":"assets/shaders/tinted.frag"
+                },
+                "textured":{
+                    "vs":"assets/shaders/textured.vert",
+                    "fs":"assets/shaders/textured.frag"
+                }
+            },
+            "textures":{
+                "moon": "assets/textures/moon.jpg",
+                "grass": "assets/textures/grass_ground_d.jpg",
+                "wood": "assets/textures/wood.jpg",
+                "glass": "assets/textures/glass-panels.png",
+                "monkey": "assets/textures/monkey.png",
+                "wall": "assets/Texture2D/Marble Wall Z.png",
+                "floor": "assets/Texture2D/Floor_Roughness.png",
+                "ceiling": "assets/Texture2D/CeilingSconce_Hotel_Prop_CeilingSconce_Hotel_Prop_AlbedoTransparency.png"
+            },
+            "meshes":{
+                "cube": "assets/models/cube.obj",
+                "monkey": "assets/models/monkey.obj",
+                "plane": "assets/models/plane.obj",
+                "sphere": "assets/models/sphere.obj",
+                "chair": "assets/Mesh/Chair_001_Hotel_Prop_Combined.obj",
+                "door": "assets/Mesh/Door_004_Common_Struc.obj"
+            },
+            "samplers":{
+                "default":{},
+                "pixelated":{
+                    "MAG_FILTER": "GL_NEAREST"
+                }
+            },
+            "materials":{
+                "metal":{
+                    "type": "tinted",
+                    "shader": "tinted",
+                    "pipelineState": {
+                        "faceCulling":{
+                            "enabled": false
+                        },
+                        "depthTesting":{
+                            "enabled": true
+                        }
+                    },
+                    "tint": [0.45, 0.4, 0.5, 1]
+                },
+                "chair":{
+                    "type": "tinted",
+                    "shader": "tinted",
+                    "pipelineState": {
+                        "faceCulling":{
+                            "enabled": false
+                        },
+                        "depthTesting":{
+                            "enabled": true
+                        }
+                    },
+                    "tint": [0.45, 0.4, 0.5, 1]
+                },
+                "door":{
+                    "type": "tinted",
+                    "shader": "tinted",
+                    "pipelineState": {
+                        "faceCulling":{
+                            "enabled": false
+                        },
+                        "depthTesting":{
+                            "enabled": true
+                        }
+                    },
+                    "tint": [0.45, 0.4, 0.5, 1]
+                },
+                "floor":{
+                    "type": "textured",
+                    "shader": "textured",
+                    "pipelineState": {
+                        "faceCulling":{
+                            "enabled": false
+                        },
+                        "depthTesting":{
+                            "enabled": true
+                        }
+                    },
+                    "tint": [1, 1, 1, 1],
+                    "texture": "floor",
+                    "sampler": "default"
+                },
+                "ceiling":{
+                    "type": "textured",
+                    "shader": "textured",
+                    "pipelineState": {
+                        "faceCulling":{
+                            "enabled": false
+                        },
+                        "depthTesting":{
+                            "enabled": true
+                        }
+                    },
+                    "tint": [1, 1, 1, 1],
+                    "texture": "ceiling",
+                    "sampler": "default"
+                },
+                "wall":{
+                    "type": "textured",
+                    "shader": "textured",
+                    "pipelineState": {
+                        "faceCulling":{
+                            "enabled": false
+                        },
+                        "depthTesting":{
+                            "enabled": true
+                        }
+                    },
+                    "tint": [1, 1, 1, 1],
+                    "texture": "wall",
+                    "sampler": "default"
+                },
+                "glass":{
+                    "type": "textured",
+                    "shader": "textured",
+                    "pipelineState": {
+                        "faceCulling":{
+                            "enabled": false
+                        },
+                        "depthTesting":{
+                            "enabled": true
+                        },
+                        "blending":{
+                            "enabled": true,
+                            "sourceFactor": "GL_SRC_ALPHA",
+                            "destinationFactor": "GL_ONE_MINUS_SRC_ALPHA"
+                        },
+                        "depthMask": false
+                    },
+                    "transparent": true,
+                    "tint": [1, 1, 1, 1],
+                    "texture": "glass",
+                    "sampler": "pixelated"
+                },
+                "grass":{
+                    "type": "textured",
+                    "shader": "textured",
+                    "pipelineState": {
+                        "faceCulling":{
+                            "enabled": false
+                        },
+                        "depthTesting":{
+                            "enabled": true
+                        }
+                    },
+                    "tint": [1, 1, 1, 1],
+                    "texture": "grass",
+                    "sampler": "default"
+                },
+                "monkey":{
+                    "type": "textured",
+                    "shader": "textured",
+                    "pipelineState": {
+                        "faceCulling":{
+                            "enabled": false
+                        },
+                        "depthTesting":{
+                            "enabled": true
+                        }
+                    },
+                    "tint": [1, 1, 1, 1],
+                    "texture": "monkey",
+                    "sampler": "default"
+                },
+                "moon":{
+                    "type": "textured",
+                    "shader": "textured",
+                    "pipelineState": {
+                        "faceCulling":{
+                            "enabled": false
+                        },
+                        "depthTesting":{
+                            "enabled": true
+                        }
+                    },
+                    "tint": [1, 1, 1, 1],
+                    "texture": "moon",
+                    "sampler": "default"
+                }
+            }
+        },
+        "physicsWorld": {
+            "gravity": [0, -9.81, 0]
+        },
+        "world":[
+            {
+                "position": [0, 5, 20],
+                "components": [
+                    {
+                        "type": "Camera"
+                    },
+                    {
+                        "type": "Free Camera Controller"
+                    },
+                    {
+                        "type": "Rigid Body",       // rigid body component for the player to allow collisions and physics interactions
+                        "rb_type": "Dynamic",       // static body for the floor, a kinematic body for a moving platform and a dynamic body for a rock that could fall on the floor.
+                        "enableGravity": true,      // enable gravity for the player (default is true)
+                        "allowedToSleep": false,    // sleeping technique is used to disable the simulation of resting bodies.
+                        "rotationAxis": [1, 1, 1],
+                        "motionAxis": [1, 1, 1],
+                        "relativePosition": [0, 0, 0],
+                        "collider": {
+                            // "type": "Capsule Collider",
+                            // "radius": 0.5,
+                            // "height": 2.0,
+                            "type": "Box Collider",
+                            "halfExtents": [0.5, 1, 0.5],
+                            "bounciness": 0.0,
+                            "friction": 1.0,
+                            "isTrigger": false              // is the collider a trigger (default is false)
+                        }
+                    }
+                ]
+            },
+            {
+                "position": [0, -2, 0],
+                "rotation": [-90, 0, 0],
+                "scale": [100, 100, 1],
+                "components": [
+                    {
+                        "type": "Mesh Renderer",
+                        "mesh": "plane",
+                        "material": "floor"
+                    },
+                    {
+                        "type": "Rigid Body",
+                        "rb_type": "Static",
+                        "collider": {
+                            "type": "Box Collider",
+                            "halfExtents": [100, 100, 0.01],
+                            "bounciness": 0.0
+                        }
+                    }
+                ]
+            },
+            {
+                "position": [-5, 0, 10],
+                "rotation": [0, 0, 0],
+                "scale": [1.5, 1.5, 1.5],
+                "components": [
+                    {
+                        "type": "Mesh Renderer",
+                        "mesh": "chair",
+                        "material": "chair"
+                    },
+                    {
+                        "type": "Rigid Body",
+                        "rb_type": "Dynamic",
+                        "enableGravity": true,
+                        "relativePosition": [0, 1, 0],
+                        "collider": {
+                            "type": "Box Collider",
+                            "halfExtents": [0.5, 1, 0.5],
+                            "bounciness": 0.0
+                        }
+                    }
+                ]
+            },
+            // {
+            //     "name": "wall",
+            //     "position": [5, 0, 10],
+            //     "rotation": [0, 90, 0],
+            //     "scale": [10, 10, 2],
+            //     "components": [
+            //         {
+            //             "type": "Mesh Renderer",
+            //             "mesh": "plane",
+            //             "material": "wall"
+            //         },
+            //         {
+            //             "type": "Rigid Body",
+            //             "rb_type": "Static",
+            //             "collider": {
+            //                 "type": "Box Collider",
+            //                 "halfExtents": [10, 10, 1],
+            //                 "bounciness": 0.0
+            //             }
+            //         }
+            //     ]
+            // },
+            {
+                "name": "wall1",
+                "position": [-10, 0, -10],
+                "rotation": [0, 0, 0],
+                "scale": [5, 5, 1],
+                "components": [
+                    {
+                        "type": "Mesh Renderer",
+                        "mesh": "plane",
+                        "material": "wall"
+                    },
+                    {
+                        "type": "Rigid Body",
+                        "rb_type": "Static",
+                        "collider": {
+                            "type": "Box Collider",
+                            "halfExtents": [5, 5, 0.1]
+                        }
+                    }
+                ]
+            },
+            // {
+            //     "name": "wall2",
+            //     "position": [-10, 0, 10],
+            //     "rotation": [0, 0, 0],
+            //     "scale": [5, 5, 1],
+            //     "components": [
+            //         {
+            //             "type": "Mesh Renderer",
+            //             "mesh": "plane",
+            //             "material": "wall"
+            //         },
+            //         {
+            //             "type": "Rigid Body",
+            //             "rb_type": "Static",
+            //             "collider": {
+            //                 "type": "Box Collider",
+            //                 "halfExtents": [5, 5, 0.1]
+            //             }
+            //         }
+            //     ]
+            // },
+            // {
+            //     "position": [0, 1, 2],
+            //     "rotation": [0, 0, 0],
+            //     "scale": [20, 20, 2],
+            //     "components": [
+            //         {
+            //             "type": "Mesh Renderer",
+            //             "mesh": "plane",
+            //             "material": "wall"
+            //         },
+            //         {
+            //             "type": "Rigid Body",
+            //             "rb_type": "Static",
+            //             "collider": {
+            //                 "type": "Box Collider",
+            //                 "halfExtents": [20, 20, 1],
+            //                 "bounciness": 0.0
+            //             }
+            //         }
+            //     ]
+            // },
+            // {
+            //     "position": [20, 1, 0],
+            //     "rotation": [0, 90, 0],
+            //     "scale": [20, 20, 2],
+            //     "components": [
+            //         {
+            //             "type": "Mesh Renderer",
+            //             "mesh": "plane",
+            //             "material": "wall"
+            //         },
+            //         {
+            //             "type": "Rigid Body",
+            //             "rb_type": "Static",
+            //             "collider": {
+            //                 "type": "Box Collider",
+            //                 "halfExtents": [20, 20, 1],
+            //                 "bounciness": 0.0
+            //             }
+            //         }
+            //     ]
+            // },
+            // {
+            //     "position": [0, 50, 0],
+            //     "rotation": [90, 0, 0],
+            //     "scale": [50, 50, 2],
+            //     "components": [
+            //         {
+            //             "type": "Mesh Renderer",
+            //             "mesh": "plane",
+            //             "material": "ceiling"
+            //         }
+            //     ]
+            // }
+        ]
     }
 }

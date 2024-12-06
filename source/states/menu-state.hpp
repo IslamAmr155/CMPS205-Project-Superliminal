@@ -45,7 +45,7 @@ class Menustate: public our::State {
     // A variable to record the time since the state is entered (it will be used for the fading effect).
     float time;
     // An array of the button that we can interact with
-    std::array<Button, 2> buttons;
+    std::array<Button, 3> buttons;
 
     void onInitialize() override {
         // First, we create a material for the menu's background
@@ -56,7 +56,7 @@ class Menustate: public our::State {
         menuMaterial->shader->attach("assets/shaders/textured.frag", GL_FRAGMENT_SHADER);
         menuMaterial->shader->link();
         // Then we load the menu texture
-        menuMaterial->texture = our::texture_utils::loadImage("assets/textures/menu.png");
+        menuMaterial->texture = our::texture_utils::loadImage("assets/textures/menu0.png");
         // Initially, the menu material will be black, then it will fade in
         menuMaterial->tint = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
 
@@ -98,14 +98,18 @@ class Menustate: public our::State {
         //      We store [this] in the capture list since we will use it in the action.
         // - The argument list () which is the arguments that the lambda should receive when it is called.
         //      We leave it empty since button actions receive no input.
-        // - The body {} which contains the code to be executed. 
-        buttons[0].position = {830.0f, 607.0f};
+        // - The body {} which contains the code to be executed.
+        buttons[0].position = {830.0f, 570.0f};
         buttons[0].size = {400.0f, 33.0f};
-        buttons[0].action = [this](){this->getApp()->changeState("play");};
+        buttons[0].action = [this](){this->getApp()->changeState("level-0");};
 
-        buttons[1].position = {830.0f, 644.0f};
+        buttons[1].position = {830.0f, 607.0f};
         buttons[1].size = {400.0f, 33.0f};
-        buttons[1].action = [this](){this->getApp()->close();};
+        buttons[1].action = [this](){this->getApp()->changeState("play");};
+
+        buttons[2].position = {830.0f, 644.0f};
+        buttons[2].size = {400.0f, 33.0f};
+        buttons[2].action = [this](){this->getApp()->close();};
     }
 
     void onDraw(double deltaTime) override {
@@ -118,6 +122,9 @@ class Menustate: public our::State {
         } else if(keyboard.justPressed(GLFW_KEY_ESCAPE)) {
             // If the escape key is pressed in this frame, exit the game
             getApp()->close();
+        } else if(keyboard.justPressed(GLFW_KEY_ENTER)) {
+            // If the enter key is pressed in this frame, go to the level-0 state
+            getApp()->changeState("level-0");
         }
 
         // Get a reference to the mouse object and get the current mouse position

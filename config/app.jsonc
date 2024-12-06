@@ -504,6 +504,7 @@
         },
         "world":[
             {
+                "name": "camera",
                 "position": [0, 5, 20],
                 "components": [
                     {
@@ -534,6 +535,7 @@
                 ]
             },
             {
+                "name": "wall",
                 "position": [0, -2, 0],
                 "rotation": [-90, 0, 0],
                 "scale": [100, 100, 1],
@@ -555,9 +557,11 @@
                 ]
             },
             {
-                "position": [-5, 0, 10],
+                "name": "chair",
+                "position": [0, 0, 10],
                 "rotation": [0, 0, 0],
                 "scale": [1.5, 1.5, 1.5],
+                "pickable": true,
                 "components": [
                     {
                         "type": "Mesh Renderer",

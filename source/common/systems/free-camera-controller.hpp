@@ -83,6 +83,7 @@ namespace our
         bool picked = false; // Is the entity picked
         float previousDistance = 0.0f; // The distance to the picked entity
         Entity* previousParent = nullptr;
+        glm::vec3 previousScale;
 
     public:
         // When a state enters, it should call this function and give it the pointer to the application
@@ -136,8 +137,8 @@ namespace our
 
             // If the left mouse button is pressed, we get the change in the mouse location
             // and use it to update the camera rotation
-            if (app->getMouse().isPressed(GLFW_MOUSE_BUTTON_1))
-            {
+            // if (app->getMouse().isPressed(GLFW_MOUSE_BUTTON_1))
+            // {
                 glm::vec2 delta = app->getMouse().getMouseDelta();
                 // rotation.x -= delta.y * controller->rotationSensitivity; // The y-axis controls the pitch
                 // rotation.y -= delta.x * controller->rotationSensitivity; // The x-axis controls the yaw
@@ -166,7 +167,7 @@ namespace our
 
                 rotation = yawQuat * rotation * pitchQuat; // Not sure about this order
                 rotation = glm::normalize(rotation);
-            }
+            // }
 
             // We prevent the pitch from exceeding a certain angle from the XZ plane to prevent gimbal locks
             // if (rotation.x < -glm::half_pi<float>() * 0.99f)
@@ -222,7 +223,7 @@ namespace our
                 // Get the position of the camera
                 r3d::Vector3 cameraPosition = camera->getOwner()->localTransform.getPosition();
 
-                r3d::Vector3 endPosition = cameraPosition + r3d::Vector3(front.x, front.y, front.z) * 10;
+                r3d::Vector3 endPosition = cameraPosition + r3d::Vector3(front.x, front.y, front.z) * 100;
 
                 // Create a raycast callback object
                 RaycastCollision raycastCallback(cameraPosition, endPosition, picked, world, hitEntity, distance, pickedEntity);
@@ -236,17 +237,22 @@ namespace our
                 if (picked && pickedEntity->pickable) {
                     previousDistance = distance;
                     previousParent = pickedEntity->parent;
+                    previousScale = pickedEntity->localTransform.getScale();
                     r3d::Transform transform;
-                    transform.setPosition(r3d::Vector3(0,0,-5));
+                    transform.setPosition(r3d::Vector3(0,0,-distance));
                     pickedEntity->localTransform.setTransform(transform);
                     pickedEntity->getComponent<RigidBodyComponent>()->getRigidBody()->setTransform(transform);
                     pickedEntity->parent = camera->getOwner();
                 } else if (!picked && pickedEntity && pickedEntity->pickable) {
+                    float scaleRatio = distance / previousDistance;
                     glm::mat4 localToWorld = pickedEntity->getLocalToWorldMatrix();
                     r3d::Transform transform;
                     transform.setPosition(r3d::Vector3(localToWorld[3][0], localToWorld[3][1], localToWorld[3][2]));
+                    glm::vec3 newScale = previousScale * scaleRatio;
                     pickedEntity->localTransform.setTransform(transform);
+                    pickedEntity->localTransform.setScale(newScale);
                     pickedEntity->getComponent<RigidBodyComponent>()->getRigidBody()->setTransform(transform);
+                    // pickedEntity->getComponent<RigidBodyComponent>()->getRigidBody()->
                     pickedEntity->parent = previousParent;
                     pickedEntity = nullptr;
                 }

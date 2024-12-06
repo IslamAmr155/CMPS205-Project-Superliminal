@@ -39,6 +39,12 @@ namespace our {
         void setOrientation(const r3d::Quaternion& orientation) { transform.setOrientation(orientation); }
 
         // Return the orientation of the transform.
-        const r3d::Quaternion& getOrientation() const { return transform.getOrientation(); }      
+        const r3d::Quaternion& getOrientation() const { return transform.getOrientation(); }   
+
+        // Set the scale of the transform.
+        void setScale(const glm::vec3 scale) { this->scale = scale; }
+
+        // Return the scale of the transform.
+        const glm::vec3& getScale() const { return scale; }   
     };
 }

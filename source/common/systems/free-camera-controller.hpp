@@ -25,10 +25,12 @@ class RaycastCollision : public r3d::RaycastCallback
     r3d::Vector3 startPoint, endPoint, &hitPoint;
     our::World* world;
 
+    bool testForDistance = true;
+
     RaycastCollision(const r3d::Vector3& start, const r3d::Vector3& end, bool& picked, our::World* world, 
-                    our::Entity*& hitEntity, float& distance, our::Entity*& pickedEntity, r3d::Vector3& hitPoint) 
+                    our::Entity*& hitEntity, float& distance, our::Entity*& pickedEntity, r3d::Vector3& hitPoint, bool testForDistance = true) 
                 : startPoint(start), endPoint(end), picked(picked), world(world), hitEntity(hitEntity), 
-                distance(distance), pickedEntity(pickedEntity), hitPoint(hitPoint) {}
+                distance(distance), pickedEntity(pickedEntity), hitPoint(hitPoint), testForDistance(testForDistance) {}
 
     virtual r3d::decimal notifyRaycastHit(const r3d::RaycastInfo& info) {
         glm::vec3 glmEndPoint(endPoint.x, endPoint.y, endPoint.z);
@@ -41,24 +43,32 @@ class RaycastCollision : public r3d::RaycastCallback
         for (auto entity : world->getEntities()) {
             auto rigidBody = entity->getComponent<our::RigidBodyComponent>();
             if (rigidBody && rigidBody->getRigidBody() == body) {
-                std::cout << "Hit entity: " << entity->name << std::endl;
+                // std::cout << "Hit entity: " << entity->name << std::endl;
                 hitEntity = entity;
                 break;
             }
         }
 
-        if (picked && hitEntity != pickedEntity) {
-            picked = false;
-            continueRaycast = 0.0;
-        } else if (picked && hitEntity == pickedEntity) {
-            continueRaycast = 1.0;
-        } else if (!picked && !hitEntity->pickable) {
-            picked = false;
-            continueRaycast = 0.0;
-        } else if (!picked && hitEntity->pickable) {
-            continueRaycast = 0.0;
-            picked = true;
-            pickedEntity = hitEntity;
+        if (!testForDistance) {
+            if (picked && hitEntity != pickedEntity) {
+                picked = false;
+                continueRaycast = 0.0;
+            } else if (picked && hitEntity == pickedEntity) {
+                continueRaycast = 1.0;
+            } else if (!picked && !hitEntity->pickable) {
+                picked = false;
+                continueRaycast = 0.0;
+            } else if (!picked && hitEntity->pickable) {
+                continueRaycast = 0.0;
+                picked = true;
+                pickedEntity = hitEntity;
+            }
+        } else {
+            if (picked && hitEntity != pickedEntity) {
+                continueRaycast = 0.0;
+            } else {
+                continueRaycast = 1.0;
+            }
         }
  
         // Return a fraction of 1.0 to gather all hits
@@ -78,7 +88,7 @@ namespace our
         bool mouse_locked = false; // Is the mouse locked
         Entity* pickedEntity = nullptr; // The entity that is currently picked
         bool picked = false; // Is the entity picked
-        float previousDistance = 0.0f; // The distance to the picked entity
+        float originalDistance, previousDistance = 0.0f; // The distance to the picked entity
         Entity* previousParent = nullptr;
         glm::vec3 previousScale;
 
@@ -214,6 +224,35 @@ namespace our
             if (app->getKeyboard().isPressed(GLFW_KEY_A))
                 position -= right * (deltaTime * current_sensitivity.x);
 
+            // If hilding an object, check if the object behind it is closer to us than the object we are holding
+            // If it is, take the minimum distance so that the held object is closer to us
+
+            float distance = 0.0f;
+            Entity* hitEntity = nullptr;
+            // Get the position of the camera
+            r3d::Vector3 cameraPosition = camera->getOwner()->localTransform.getPosition();
+
+            r3d::Vector3 endPosition = cameraPosition + r3d::Vector3(front.x, front.y, front.z) * 100;
+
+            r3d::Vector3 hitPoint;
+
+            RaycastCollision raycastCallback(cameraPosition, endPosition, picked, world, hitEntity, distance, pickedEntity, hitPoint);
+
+            r3d::Ray ray(cameraPosition, endPosition);
+
+            world->getPhysicsWorld()->raycast(ray, &raycastCallback);
+
+            // distance > 0 added just fr testing as this should never be the case in the game when the player is surrounded by the room
+            if (picked && distance > 0 && distance < previousDistance) {
+                std::cout << "Distance: " << distance << std::endl;
+                std::cout << "Previous Distance: " << previousDistance << std::endl;
+                previousDistance = distance;
+                r3d::Transform transform = pickedEntity->localTransform.getTransform();
+                transform.setPosition(r3d::Vector3(0,0,-distance*0.8f));
+                pickedEntity->localTransform.setTransform(transform);
+                pickedEntity->getComponent<RigidBodyComponent>()->getRigidBody()->setTransform(transform);
+            }
+
             if (app->getKeyboard().justPressed(GLFW_KEY_SPACE)) {
                 float distance = 0.0f;
                 Entity* hitEntity = nullptr;
@@ -225,7 +264,7 @@ namespace our
                 r3d::Vector3 hitPoint;
 
                 // Create a raycast callback object
-                RaycastCollision raycastCallback(cameraPosition, endPosition, picked, world, hitEntity, distance, pickedEntity, hitPoint);
+                RaycastCollision raycastCallback(cameraPosition, endPosition, picked, world, hitEntity, distance, pickedEntity, hitPoint, false);
 
                 // Create the ray
                 r3d::Ray ray(cameraPosition, endPosition);
@@ -234,6 +273,7 @@ namespace our
                 world->getPhysicsWorld()->raycast(ray, &raycastCallback);
 
                 if (picked && pickedEntity->pickable) {
+                    originalDistance = distance;
                     previousDistance = distance;
                     previousParent = pickedEntity->parent;
                     previousScale = pickedEntity->localTransform.getScale();
@@ -261,9 +301,11 @@ namespace our
                     // pickedEntity->getComponent<RigidBodyComponent>()->getRigidBody()->getCollider(0)->setLocalToBodyTransform(r3d::Transform::identity());
                     pickedEntity->parent = camera->getOwner();
                 } else if (!picked && pickedEntity && pickedEntity->pickable) {
+                    pickedEntity->getComponent<RigidBodyComponent>()->getRigidBody()->setType(r3d::BodyType::DYNAMIC);
                     glm::vec3 newPosition = glm::vec3(hitPoint.x, hitPoint.y, hitPoint.z) - glm::vec3(front.x, front.y, front.z) * 1.5f * previousScale.x;
-                    
-                    float scaleRatio = distance / previousDistance;
+                    newPosition.y = hitPoint.y;
+                    newPosition.x = hitPoint.x;
+                    float scaleRatio = distance / originalDistance;
                     
                     // glm::mat4 localToWorld = pickedEntity->getLocalToWorldMatrix();
                     r3d::Transform transform;
@@ -279,7 +321,6 @@ namespace our
                     pickedEntity->localTransform.setScale(newScale);
                     pickedEntity->localTransform.setPosition(newPosition);
                     // pickedEntity->addComponent<RigidBodyComponent>();
-                    pickedEntity->getComponent<RigidBodyComponent>()->getRigidBody()->setType(r3d::BodyType::DYNAMIC);
                     pickedEntity->getComponent<RigidBodyComponent>()->getRigidBody()->setTransform(transform);
                     pickedEntity->parent = previousParent;
                     pickedEntity = nullptr;

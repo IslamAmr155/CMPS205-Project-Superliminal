@@ -65,7 +65,7 @@
                 "toy_block": "assets/models/toy_block.obj",
                 "button_base": "assets/models/button_base.obj",
                 "button": "assets/models/button.obj",
-                "door": "assets/models/door.obj"
+                "door": "assets/models/door_2.obj"
             },
             "samplers":{
                 "default":{},
@@ -202,8 +202,8 @@
                     "tint": [0.5, 0.5, 0.5, 1]
                 }, 
                 "door": {
-                    "type": "textured",
-                    "shader": "textured",
+                    "type": "tinted",
+                    "shader": "tinted",
                     "pipelineState": {
                         "faceCulling":{
                             "enabled": false
@@ -212,7 +212,7 @@
                             "enabled": true
                         }
                     },
-                    "texture": "door"
+                    "tint": [0.5, 0.5, 0.5, 1]
                 },
                 "ceiling": {
                     "type": "textured",
@@ -1422,7 +1422,7 @@
                     }
                 ]
             },{
-                "name": "Button 7ooda",
+                "name": "Button",
                 "position": [1, -0.8, 0],
                 "rotation": [0, 0, 0],
                 "scale": [1, 1, 1],
@@ -1446,28 +1446,31 @@
                     }
                 ]
             },
-            // {
-            //     "position": [-5, -1, 0],
-            //     "rotation": [0, 90, 0],
-            //     "scale": [1.2, 1.0, 1.2],
-            //     "components": [
-            //         {
-            //             "type": "Mesh Renderer",
-            //             "mesh": "door",
-            //             "material": "door"
-            //         },
-            //         {
-            //             "type": "Rigid Body",
-            //             "rb_type": "Static",
-            //             "collider": {
-            //                 "type": "Box Collider",
-            //                 "halfExtents": [1, 1, 0.5],
-            //                 "bounciness": 0.0
-            //             }
-            //             // "enableGravity": true
-            //         }
-            //     ]
-            // },
+            {
+                "name": "door",
+                "position": [-5, 0, 0],
+                "rotation": [0, 90, 0],
+                "scale": [1.2, 1.0, 1.2],
+                "components": [
+                    {
+                        "type": "Mesh Renderer",
+                        "mesh": "door",
+                        "material": "door"
+                    },
+                    {
+                        "type": "Rigid Body",
+                        "rb_type": "Dynamic",
+                        "motionAxis": [0, 1, 0],
+                        "rotationAxis": [0, 0, 0],
+                        "collider": {
+                            "type": "Box Collider",
+                            "halfExtents": [0.5, 1, 0.5],
+                            "bounciness": 0.0
+                        }
+                        // "enableGravity": true
+                    }
+                ]
+            },
             {
                 "position": [0, 5, 0],
                 "rotation": [90, 0, 0],

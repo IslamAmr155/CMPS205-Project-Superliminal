@@ -110,13 +110,13 @@ namespace our {
             }
         }
 
-        void moveCube()
+        void raiseDoor(float offset)
         {
             for(auto component : components)
             {
                 if(component->getName() == "Rigid Body")
                 {
-                    component->moveCube();
+                    component->raiseDoor(offset);
                     break;
                 }
             }

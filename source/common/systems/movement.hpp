@@ -107,7 +107,7 @@ namespace our
                 }
 
                 // Update the pressed buttons if there are any
-                if (entity->name == "Button 7ooda")
+                if (entity->name == "Button")
                 {
                     // If the button has been pressed
                     if (getMyGameTime() - entity->lastContactTime > 0.2f && entity->delta > 0.0f)
@@ -119,6 +119,13 @@ namespace our
                         rigidBody->setTransform(r3d::Transform(r3d::Vector3(position.x, position.y + 0.01f, position.z), rigidBody->getTransform().getOrientation()));
                         entity->localTransform.setPosition(glm::vec3(position.x, position.y + 0.01f, position.z));
                         entity->delta -= 0.01f;
+                        for (auto entity : world->getEntities())
+                        {
+                            if (entity->name == "door")
+                            {
+                                entity->raiseDoor(-0.2);
+                            }
+                        }
                     }
                 }
             }

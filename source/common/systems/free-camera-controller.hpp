@@ -28,14 +28,18 @@ class RaycastCollision : public r3d::RaycastCallback
     bool testForDistance = true;
 
     RaycastCollision(const r3d::Vector3& start, const r3d::Vector3& end, bool& picked, our::World* world, 
-                    our::Entity*& hitEntity, float& distance, our::Entity*& pickedEntity, r3d::Vector3& hitPoint, bool testForDistance = true) 
+                    our::Entity*& hitEntity, float& distance, our::Entity*& pickedEntity, 
+                    r3d::Vector3& hitPoint, bool testForDistance = true) 
                 : startPoint(start), endPoint(end), picked(picked), world(world), hitEntity(hitEntity), 
                 distance(distance), pickedEntity(pickedEntity), hitPoint(hitPoint), testForDistance(testForDistance) {}
 
     virtual r3d::decimal notifyRaycastHit(const r3d::RaycastInfo& info) {
-        glm::vec3 glmEndPoint(endPoint.x, endPoint.y, endPoint.z);
         glm::vec3 glmStartPoint(startPoint.x, startPoint.y, startPoint.z);
-        hitPoint = startPoint + (endPoint - startPoint) * info.hitFraction;
+        // std::cout << "Start Point: " << glmStartPoint.x << " " << glmStartPoint.y << " " << glmStartPoint.z << std::endl;
+        glm::vec3 glmEndPoint(endPoint.x, endPoint.y, endPoint.z);
+        // std::cout << "End Point: " << glmEndPoint.x << " " << glmEndPoint.y << " " << glmEndPoint.z << std::endl;
+        hitPoint = info.worldPoint;
+        // std::cout << "Hit Point: " << hitPoint.x << " " << hitPoint.y << " " << hitPoint.z << std::endl;
         distance = glm::length(glmEndPoint - glmStartPoint) * info.hitFraction;
         r3d::Body* body = info.body;
         r3d::decimal continueRaycast = info.hitFraction;
@@ -88,7 +92,7 @@ namespace our
         bool mouse_locked = false; // Is the mouse locked
         Entity* pickedEntity = nullptr; // The entity that is currently picked
         bool picked = false; // Is the entity picked
-        float originalDistance, previousDistance = 0.0f; // The distance to the picked entity
+        float originalDistance; // The distance to the picked entity
         Entity* previousParent = nullptr;
         glm::vec3 previousScale;
 
@@ -232,7 +236,12 @@ namespace our
             // Get the position of the camera
             r3d::Vector3 cameraPosition = camera->getOwner()->localTransform.getPosition();
 
-            r3d::Vector3 endPosition = cameraPosition + r3d::Vector3(front.x, front.y, front.z) * 100;
+            r3d::Quaternion cameraOrientation = camera->getOwner()->localTransform.getOrientation();
+
+            // Convert the quaternion to Euler angles to manipulate the y-axis rotation
+            glm::vec3 eulerAngles = glm::eulerAngles(glm::quat(cameraOrientation.w, cameraOrientation.x, cameraOrientation.y, cameraOrientation.z));
+
+            r3d::Vector3 endPosition = cameraPosition + r3d::Vector3(front.x, front.z * glm::tan(eulerAngles.x), front.z) * 100;
 
             r3d::Vector3 hitPoint;
 
@@ -243,14 +252,15 @@ namespace our
             world->getPhysicsWorld()->raycast(ray, &raycastCallback);
 
             // distance > 0 added just fr testing as this should never be the case in the game when the player is surrounded by the room
-            if (picked && distance > 0 && distance < previousDistance) {
-                std::cout << "Distance: " << distance << std::endl;
-                std::cout << "Previous Distance: " << previousDistance << std::endl;
-                previousDistance = distance;
+            if (picked && distance > 0 && distance < originalDistance) {
                 r3d::Transform transform = pickedEntity->localTransform.getTransform();
                 transform.setPosition(r3d::Vector3(0,0,-distance*0.8f));
                 pickedEntity->localTransform.setTransform(transform);
                 pickedEntity->getComponent<RigidBodyComponent>()->getRigidBody()->setTransform(transform);
+
+                float scaleRatio = distance / originalDistance;
+                glm::vec3 newScale = previousScale * scaleRatio;
+                pickedEntity->localTransform.setScale(newScale);
             }
 
             if (app->getKeyboard().justPressed(GLFW_KEY_SPACE)) {
@@ -259,7 +269,13 @@ namespace our
                 // Get the position of the camera
                 r3d::Vector3 cameraPosition = camera->getOwner()->localTransform.getPosition();
 
-                r3d::Vector3 endPosition = cameraPosition + r3d::Vector3(front.x, front.y, front.z) * 100;
+                r3d::Quaternion cameraOrientation = camera->getOwner()->localTransform.getOrientation();
+
+                // Convert the quaternion to Euler angles to manipulate the y-axis rotation
+                glm::vec3 eulerAngles = glm::eulerAngles(glm::quat(cameraOrientation.w, cameraOrientation.x, cameraOrientation.y, cameraOrientation.z));
+
+                r3d::Vector3 endPosition = cameraPosition + r3d::Vector3(front.x, front.z * glm::tan(eulerAngles.x), front.z) * 100;
+
 
                 r3d::Vector3 hitPoint;
 
@@ -273,8 +289,8 @@ namespace our
                 world->getPhysicsWorld()->raycast(ray, &raycastCallback);
 
                 if (picked && pickedEntity->pickable) {
+                    // std::cout << "New Position: " << hitPoint.x << " " << hitPoint.y << " " << hitPoint.z << std::endl;
                     originalDistance = distance;
-                    previousDistance = distance;
                     previousParent = pickedEntity->parent;
                     previousScale = pickedEntity->localTransform.getScale();
                     r3d::Transform transform;
@@ -300,11 +316,14 @@ namespace our
                     pickedEntity->getComponent<RigidBodyComponent>()->getRigidBody()->setTransform(transform);
                     // pickedEntity->getComponent<RigidBodyComponent>()->getRigidBody()->getCollider(0)->setLocalToBodyTransform(r3d::Transform::identity());
                     pickedEntity->parent = camera->getOwner();
+                    // pickedEntity->getComponent<RigidBodyComponent>()->getRigidBody()->enableGravity(false);
                 } else if (!picked && pickedEntity && pickedEntity->pickable) {
                     pickedEntity->getComponent<RigidBodyComponent>()->getRigidBody()->setType(r3d::BodyType::DYNAMIC);
                     glm::vec3 newPosition = glm::vec3(hitPoint.x, hitPoint.y, hitPoint.z) - glm::vec3(front.x, front.y, front.z) * 1.5f * previousScale.x;
+                    // std::cout << "New Position: " << newPosition.x << " " << newPosition.y << " " << newPosition.z << std::endl;
                     newPosition.y = hitPoint.y;
                     newPosition.x = hitPoint.x;
+                    newPosition.z = hitPoint.z;
                     float scaleRatio = distance / originalDistance;
                     
                     // glm::mat4 localToWorld = pickedEntity->getLocalToWorldMatrix();

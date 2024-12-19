@@ -11,8 +11,8 @@
     },
     "scene": {
         "renderer":{
-            "sky": "assets/textures/sky.jpg",
-            "postprocess": "assets/shaders/postprocess/vignette.frag"
+            "sky": "assets/textures/sky.jpg"
+            // "postprocess": "assets/shaders/postprocess/vignette.frag"
         },
         "assets":{
             "shaders":{
@@ -42,11 +42,18 @@
                 "house_ambient_occlusion": "assets/textures/house_ambient_occlusion.jpg",
                 "house_roughness": "assets/textures/house_roughness.jpg",
                 "house_emissive": "assets/textures/house_emissive.jpg",
-                "floor": "assets/textures/metal_floor_back.png",
+
+                "black": "assets/textures/black.jpg",
+
+                "floor": "assets/textures/metal_floor.png",
                 "chamber_wall": "assets/textures/chamber_wall_panel.png",
                 "toy_block": "assets/textures/toy_block.png",
                 "door": "assets/textures/door.png",
-                "ceiling": "assets/textures/ceiling.png"
+                "ceiling": "assets/textures/ceiling_ambient_occlusion.png",
+                "floor_ambient_occlusion": "assets/textures/floor_ambient_occlusion.png",
+                "ceiling_ambient_occlusion": "assets/textures/ceiling_ambient_occlusion.png",
+                "metal_specular": "assets/textures/metal_specular.png",
+                "toy_block_ambient_occlusion": "assets/textures/toy_block_ambient_occlusion.png"
             },
             "meshes":{
                 "cube": "assets/models/cube.obj",
@@ -120,8 +127,9 @@
                     "texture": "floor"
                 },
                 "chamber_wall":{
-                    "type": "textured",
-                    "shader": "textured",
+                    // "type": "textured",
+                    "type": "lit",
+                    "shader": "lit",
                     "pipelineState": {
                         "faceCulling":{
                             "enabled": false
@@ -130,25 +138,25 @@
                             "enabled": true
                         }
                     },
-                    "tint": [1, 1, 1, 1],
+                    // "tint": [1, 1, 1, 1],
                     // "texture": "monkey",
                     // "texture": "house",
                     // "sampler": "default",
-                    // "albedo": "house_albedo",
-                    // "albedo_tint": [1, 1, 1],
-                    // "specular": "house_specular",
-                    // "specular_tint": [1, 1, 1],
-                    // "ambient_occlusion": "house_ambient_occlusion",
-                    // "roughness": "house_roughness",
-                    // "roughness_range": [0.0, 1.0],
-                    // "emissive": "house_emissive"
-                    // "emissive_tint": [1, 1, 1]
-                    "texture": "chamber_wall",
+                    "albedo": "chamber_wall",
+                    "albedo_tint": [1, 1, 1],
+                    "specular": "black",
+                    "specular_tint": [1, 1, 1],
+                    "ambient_occlusion": "black",
+                    "roughness": "black",
+                    "roughness_range": [0.0, 1.0],
+                    "emissive": "black",
+                    "emissive_tint": [1, 1, 1],
+                    // "texture": "chamber_wall",
                     "sampler": "repeated"
                 },
                 "toy_block":{
-                    "type": "textured",
-                    "shader": "textured",
+                    "type": "lit",
+                    "shader": "lit",
                     "pipelineState": {
                         "faceCulling":{
                             "enabled": false
@@ -157,7 +165,15 @@
                             "enabled": true
                         }
                     },
-                    "texture": "toy_block"
+                    "albedo": "toy_block",
+                    "albedo_tint": [1, 1, 1],
+                    "specular": "black",
+                    "specular_tint": [0, 0, 0],
+                    "ambient_occlusion": "toy_block_ambient_occlusion",
+                    "roughness": "black",
+                    "roughness_range": [0.0, 1.0],
+                    "emissive": "black",
+                    "emissive_tint": [1, 1, 1]
                 },
                 "button":{
                     "type": "tinted",
@@ -214,7 +230,7 @@
             }
         },
         "physicsWorld": {
-            "gravity": [0, -9.81, 0]
+            "gravity": [0, -5.0, 0]
         },
         "world":[
             {
@@ -229,7 +245,7 @@
                     {
                         "type": "Rigid Body",       // rigid body component for the player to allow collisions and physics interactions
                         "rb_type": "Dynamic",       // static body for the floor, a kinematic body for a moving platform and a dynamic body for a rock that could fall on the floor.
-                        "enableGravity": false,      // enable gravity for the player (default is true)
+                        "enableGravity": true,      // enable gravity for the player (default is true)
                         "allowedToSleep": false,    // sleeping technique is used to disable the simulation of resting bodies.
                         "rotationAxis": [1, 1, 1],
                         "motionAxis": [1, 1, 1],
@@ -268,29 +284,47 @@
             //         }
             //     ]
             // },
-            // {
-            //     "position": [-3, 3, 7],
-            //     "components": [
-            //         {
-            //             "type": "Mesh Renderer",
-            //             "mesh": "cube",
-            //             "material": "metal"
-            //         },
-            //         {
-            //             "type": "Light",
-            //             "color": [1, 0, 0],
-            //             "lightType": 1,
-            //             // "position": [-3, 3, 7],
-            //             // "direction": [1.0, 0.0, -1.0],
-            //             "diffuse": [1.0, 1.0, 1.0],
-            //             "specular": [1.0, 1.0, 1.0],
-            //             "ambient": [0.1, 0.1, 0.1],
-            //             "constant": 0.0,
-            //             "linear": 0.0,
-            //             "quadratic": 0.01
-            //         }
-            //     ]
-            // },
+            {
+                "position": [0, 2, 0],
+                "components": [
+                    // {
+                    //     "type": "Mesh Renderer",
+                    //     "mesh": "cube",
+                    //     "material": "metal"
+                    // },
+                    {
+                        "type": "Light",
+                        "color": [0.8, 0.8, 0.8],
+                        "lightType": 1,
+                        // "position": [-3, 3, 7],
+                        // "direction": [1.0, 0.0, -1.0],
+                        "diffuse": [0.75, 0.75, 0.75],
+                        "specular": [1.0, 1.0, 1.0],
+                        "ambient": [0.1, 0.1, 0.1],
+                        "constant": 1.0,
+                        "linear": 0.01,
+                        "quadratic": 0.01
+                    }
+                ]
+            },
+            {
+                "position": [-10, 6, 0],
+                "components": [
+                    {
+                        "type": "Light",
+                        "color": [1, 1, 1],
+                        "lightType": 1,
+                        // "position": [-3, 3, 7],
+                        // "direction": [1.0, 0.0, -1.0],
+                        "diffuse": [1.0, 1.0, 1.0],
+                        "specular": [1.0, 1.0, 1.0],
+                        "ambient": [0.1, 0.1, 0.1],
+                        "constant": 1.0,
+                        "linear": 0.01,
+                        "quadratic": 0.01
+                    }
+                ]
+            },
             // {
             //     "position": [4, 3, 2],
             //     "components": [
@@ -853,7 +887,7 @@
                         "rb_type": "Static",
                         "collider": {
                             "type": "Box Collider",
-                            "halfExtents": [1, 0, 0.1],
+                            "halfExtents": [1, 0.1, 0.1],
                             "bounciness": 0.0
                         }
                     }

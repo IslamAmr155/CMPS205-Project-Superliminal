@@ -39,18 +39,19 @@ namespace our
         // This will deserialize the rigid body component from a json object
         void deserialize(const nlohmann::json &data) override;
 
-        void moveCube() override
+        void raiseDoor(float offset) override
         {
             // If the rigid body exists
             if (rigidBody)
             {
                 auto entity = getOwner();
                 r3d::Vector3 position = entity->localTransform.getPosition();
-                entity->localTransform.setPosition(glm::vec3(position.x, position.y + 0.1f, position.z));
+                printf("raising by %f\n", offset);
+                entity->localTransform.setPosition(glm::vec3(position.x, position.y + offset, position.z));
                 auto rigidBody = this->getRigidBody();
                 r3d::Transform transform = rigidBody->getTransform();
                 r3d::Vector3 pos = transform.getPosition();
-                transform.setPosition(r3d::Vector3(pos.x, pos.y + 0.1f, pos.z));
+                transform.setPosition(r3d::Vector3(pos.x, pos.y + offset, pos.z));
                 rigidBody->setTransform(transform);
             }
         }

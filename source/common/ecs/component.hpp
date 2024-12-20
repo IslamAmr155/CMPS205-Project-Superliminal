@@ -22,7 +22,7 @@ namespace our {
 
         virtual std::string getName() { return "Component"; }
 
-        virtual void moveCube() { return; }
+        virtual void raiseDoor(float offset) { return; }
 
         // Reads the data of the component from a json object
         // It is abstract since it must be overriden by derived components

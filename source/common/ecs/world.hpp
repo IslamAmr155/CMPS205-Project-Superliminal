@@ -122,7 +122,7 @@ namespace our
         {
             // Check if this is the button object
             Entity *entity = static_cast<Entity *>(body->getUserData());
-            return entity && entity->name == "Button 7ooda";
+            return entity && entity->name == "Button";
         }
 
         void onContact(const r3d::CollisionCallback::CallbackData &callbackData) override
@@ -165,9 +165,9 @@ namespace our
 
                                 for (auto entity : world->getEntities())
                                 {
-                                    if (entity->name == "Cube")
+                                    if (entity->name == "door")
                                     {
-                                        entity->moveCube();
+                                        entity->raiseDoor(0.2);
                                     }
                                 }
                             }

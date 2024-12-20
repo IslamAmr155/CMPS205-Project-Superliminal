@@ -11,8 +11,8 @@
     },
     "scene": {
         "renderer":{
-            "sky": "assets/textures/sky.jpg"
-            // "postprocess": "assets/shaders/postprocess/vignette.frag"
+            "sky": "assets/textures/sky.jpg",
+            "postprocess": "assets/shaders/postprocess/edge-detection.frag"
         },
         "assets":{
             "shaders":{

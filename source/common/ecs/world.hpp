@@ -22,6 +22,9 @@ namespace our
     public:
         World() = default;
 
+        // Boolean to indicate winning state
+        bool win = false;
+
         // This will deserialize a json array of entities and add the new entities to the current world
         // If parent pointer is not null, the new entities will be have their parent set to that given pointer
         // If any of the entities has children, this function will be called recursively for these children
@@ -155,6 +158,7 @@ namespace our
                             button->lastContactTime = getMyGameTime();
                             // printf("Button pressed at %f\n", button->lastContactTime);
 
+
                             if (button->delta < 0.2f)
                             {
                                 printf("Delta: %f\n", button->delta);
@@ -169,6 +173,13 @@ namespace our
                                     {
                                         entity->raiseDoor(0.2);
                                     }
+                                }
+                            }
+                            else
+                            {
+                                if (button->isWin == true)
+                                {
+                                    world->win = true;
                                 }
                             }
                         }

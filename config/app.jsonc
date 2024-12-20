@@ -1444,7 +1444,9 @@
                         "rb_type": "Static"
                     }
                 ]
-            },{
+            },
+            // Button 1
+            {
                 "name": "Button",
                 "position": [1, -0.8, 0],
                 "rotation": [0, 0, 0],
@@ -1469,6 +1471,7 @@
                     }
                 ]
             },
+            // Button 2
             {
                 "name": "Button",
                 "position": [-10, -0.8, 0],
@@ -1476,6 +1479,7 @@
                 "scale": [1, 1, 1],
                 "motionAxis": [0, 1, 0],
                 "rotationAxis": [0, 0, 0],
+                "isWin": true,
                 "components": [
                     {
                         "type": "Mesh Renderer",

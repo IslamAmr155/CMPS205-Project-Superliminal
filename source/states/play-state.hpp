@@ -56,6 +56,19 @@ class Playstate: public our::State {
             // If the escape  key is pressed in this frame, go to the play state
             getApp()->changeState("menu");
         }
+
+        // Print the time every second incrementally
+        static float lastTime = 0;
+        if(our::getMyGameTime() - lastTime > 1.0f){
+            printf("Time: %f\n", our::getMyGameTime());
+            lastTime = our::getMyGameTime();
+        }
+        // if(our::getMyGameTime() > 3.0f){
+        //     getApp()->changeState("try-again");
+        // }
+        if(world.win){
+            getApp()->changeState("try-again");
+        }
     }
 
     void onDestroy() override {

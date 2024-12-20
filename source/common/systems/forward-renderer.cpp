@@ -324,6 +324,15 @@ namespace our {
             glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
             //TODO: (Req 11) Setup the postprocess material and draw the fullscreen triangle
             this->postprocessMaterial->setup();
+            
+            // get opengl window size
+            GLint viewport[4];
+            glGetIntegerv(GL_VIEWPORT, viewport);
+            int windowWidth = viewport[2];
+            int windowHeight = viewport[3];
+            this->postprocessMaterial->shader->set("offset_x", 1.0f / windowWidth);
+            this->postprocessMaterial->shader->set("offset_y", 1.0f / windowHeight);
+
             glBindVertexArray(this->postProcessVertexArray);
             glDrawArrays(GL_TRIANGLES, 0, 3);
         }

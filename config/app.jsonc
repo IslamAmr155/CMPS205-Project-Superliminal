@@ -11,8 +11,8 @@
     },
     "scene": {
         "renderer":{
-            "sky": "assets/textures/sky.jpg",
-            "postprocess": "assets/shaders/postprocess/edge-detection.frag"
+            "sky": "assets/textures/sky.jpg"
+            // "postprocess": "assets/shaders/postprocess/edge-detection.frag"
         },
         "assets":{
             "shaders":{
@@ -298,6 +298,29 @@
                         "lightType": 1,
                         // "position": [-3, 3, 7],
                         // "direction": [1.0, 0.0, -1.0],
+                        "diffuse": [0.75, 0.75, 0.75],
+                        "specular": [1.0, 1.0, 1.0],
+                        "ambient": [0.1, 0.1, 0.1],
+                        "constant": 1.0,
+                        "linear": 0.01,
+                        "quadratic": 0.01
+                    }
+                ]
+            },
+            {
+                "position": [-10, 2, 0],
+                "components": [
+                    // {
+                    //     "type": "Mesh Renderer",
+                    //     "mesh": "cube",
+                    //     "material": "metal"
+                    // },
+                    {
+                        "type": "Light",
+                        "color": [0.8, 0.8, 0.8],
+                        "lightType": 2,
+                        // "position": [-3, 3, 7],
+                        "direction": [0.0, -1.0, 0.0],
                         "diffuse": [0.75, 0.75, 0.75],
                         "specular": [1.0, 1.0, 1.0],
                         "ambient": [0.1, 0.1, 0.1],
@@ -1447,8 +1470,33 @@
                 ]
             },
             {
+                "name": "Button",
+                "position": [-10, -0.8, 0],
+                "rotation": [0, 0, 0],
+                "scale": [1, 1, 1],
+                "motionAxis": [0, 1, 0],
+                "rotationAxis": [0, 0, 0],
+                "components": [
+                    {
+                        "type": "Mesh Renderer",
+                        "mesh": "button",
+                        "material": "button"
+                    },
+                    {
+                        "type": "Rigid Body",
+                        "rb_type": "Static",
+                        "collider": {
+                            "type": "Box Collider",
+                            "halfExtents": [0.8, 0.5, 0.8],
+                            "bounciness": 0.0
+                        },
+                        "enableGravity": true
+                    }
+                ]
+            },
+            {
                 "name": "door",
-                "position": [-5, 0, 0],
+                "position": [-5, 10, 0],
                 "rotation": [0, 90, 0],
                 "scale": [1.2, 1.0, 1.2],
                 "components": [

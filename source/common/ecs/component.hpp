@@ -19,6 +19,11 @@ namespace our {
         // This ID will be used as the key to store a component into the entity's component map 
         // When you create a new type of components, override this function to return a new unique ID
         static std::string getID() { return "Component"; }
+
+        virtual std::string getName() { return "Component"; }
+
+        virtual void moveCube() { return; }
+
         // Reads the data of the component from a json object
         // It is abstract since it must be overriden by derived components
         virtual void deserialize(const nlohmann::json& data) = 0;

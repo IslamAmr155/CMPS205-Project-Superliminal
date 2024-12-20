@@ -7,6 +7,7 @@
 #include <systems/free-camera-controller.hpp>
 #include <systems/movement.hpp>
 #include <asset-loader.hpp>
+#include "../common/global/global.hpp"
 
 // This state shows how to use the ECS framework and deserialization.
 class Playstate: public our::State {
@@ -36,6 +37,9 @@ class Playstate: public our::State {
         // Then we initialize the renderer
         auto size = getApp()->getFrameBufferSize();
         renderer.initialize(size, config["renderer"]);
+
+        // Start the game time
+        printf("Time: %f\n", our::getMyGameTime());
     }
 
     void onDraw(double deltaTime) override {

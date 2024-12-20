@@ -23,6 +23,9 @@ namespace our {
                           // If parent is null, the entity is a root entity (has no parent).
         Transform localTransform; // The transform of this entity relative to its parent.
 
+        float delta = 0.0f;         // In case the entity is a button, delta represents the offset by which the button has been moved.
+        float lastContactTime = 0.0f;   // In case the entity is a button, lastContactTime represents when the button has been pressed.
+
         World* getWorld() const { return world; } // Returns the world to which this entity belongs
 
         glm::mat4 getLocalToWorldMatrix() const; // Computes and returns the transformation from the entities local space to the world space
@@ -103,6 +106,18 @@ namespace our {
                 if(*it == component){
                     delete *it;
                     components.erase(it);
+                    break;
+                }
+            }
+        }
+
+        void moveCube()
+        {
+            for(auto component : components)
+            {
+                if(component->getName() == "Rigid Body")
+                {
+                    component->moveCube();
                     break;
                 }
             }

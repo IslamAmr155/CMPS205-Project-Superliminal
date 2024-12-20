@@ -72,6 +72,8 @@ set(COMMON_SOURCES
 
         source/common/components/camera.hpp
         source/common/components/camera.cpp
+        source/common/components/light.hpp
+        source/common/components/light.cpp
         source/common/components/mesh-renderer.hpp
         source/common/components/mesh-renderer.cpp
         source/common/components/free-camera-controller.hpp
@@ -81,6 +83,8 @@ set(COMMON_SOURCES
         source/common/components/component-deserializer.hpp
         source/common/components/rigid-body.hpp
         source/common/components/rigid-body.cpp
+
+        source/common/global/global.hpp
 
         source/common/systems/forward-renderer.hpp
         source/common/systems/forward-renderer.cpp

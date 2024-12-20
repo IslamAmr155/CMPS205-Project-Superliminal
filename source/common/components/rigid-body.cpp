@@ -43,6 +43,8 @@ namespace our {
         const glm::vec3 rotationAxis = data.value("rotationAxis", glm::vec3(1.0f, 1.0f, 1.0f));
         rigidBody->setAngularLockAxisFactor(r3d::Vector3(rotationAxis.x, rotationAxis.y, rotationAxis.z));
 
+        rigidBody->setUserData(static_cast<void*>(this->getOwner()));
+
         // Create the collider
         if (data.contains("collider")) {
             deserialize_collider(data["collider"]);

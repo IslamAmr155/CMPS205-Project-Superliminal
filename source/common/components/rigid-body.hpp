@@ -1,16 +1,16 @@
 #pragma once
 
+#include "../ecs/world.hpp"
 #include "../ecs/component.hpp"
 #include "../deserialize-utils.hpp"
 #include "../ecs/entity.hpp"
-#include "../ecs/world.hpp"
 
 #include <reactphysics3d/reactphysics3d.h>
 namespace r3d = reactphysics3d;
 
 namespace our
 {
-
+    class World;
     // This component denotes that any renderer should draw the given mesh using the given material at the transformation of the owning entity.
     class RigidBodyComponent : public Component
     {
@@ -31,8 +31,29 @@ namespace our
         // The ID of this component type is "Rigid Body"
         static std::string getID() { return "Rigid Body"; }
 
+        std::string getName() override
+        {
+            return "Rigid Body";
+        }
+
         // This will deserialize the rigid body component from a json object
         void deserialize(const nlohmann::json &data) override;
+
+        void moveCube() override
+        {
+            // If the rigid body exists
+            if (rigidBody)
+            {
+                auto entity = getOwner();
+                r3d::Vector3 position = entity->localTransform.getPosition();
+                entity->localTransform.setPosition(glm::vec3(position.x, position.y + 0.1f, position.z));
+                auto rigidBody = this->getRigidBody();
+                r3d::Transform transform = rigidBody->getTransform();
+                r3d::Vector3 pos = transform.getPosition();
+                transform.setPosition(r3d::Vector3(pos.x, pos.y + 0.1f, pos.z));
+                rigidBody->setTransform(transform);
+            }
+        }
 
         // This will return the rigid body
         r3d::RigidBody *getRigidBody()

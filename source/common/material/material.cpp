@@ -58,6 +58,7 @@ namespace our {
         // Set the alpha threshold
         shader->set("alphaThreshold", alphaThreshold);
 
+        glActiveTexture(GL_TEXTURE0);
         // If the texture exists bind it
         if(texture)
             texture->bind();
@@ -79,4 +80,61 @@ namespace our {
         sampler = AssetLoader<Sampler>::get(data.value("sampler", ""));
     }
 
+    void LitMaterial::setup() const {
+        // Call the material setup
+        TintedMaterial::setup();
+
+        // Set the albedo texture
+        glActiveTexture(GL_TEXTURE0);
+        albedo->bind();
+        if(sampler)
+            sampler->bind(0);
+        shader->set("material.albedo_map", 0);
+        shader->set("material.albedo_tint", albedo_tint);
+
+        // Set the specular texture
+        glActiveTexture(GL_TEXTURE1);
+        specular->bind();
+        if(sampler)
+            sampler->bind(1);
+        shader->set("material.specular_map", 1);
+        shader->set("material.specular_tint", specular_tint);
+
+        // Set the roughness texture
+        glActiveTexture(GL_TEXTURE2);
+        roughness->bind();
+        if(sampler)
+            sampler->bind(2);
+        shader->set("material.roughness_map", 2);
+        shader->set("material.roughness_range", roughness_range);
+
+        // Set the ambient occlusion texture
+        glActiveTexture(GL_TEXTURE3);
+        ambient_occlusion->bind();
+        if(sampler)
+            sampler->bind(3);
+        shader->set("material.ambient_occlusion_map", 3);
+
+        // Set the emission texture
+        glActiveTexture(GL_TEXTURE4);
+        emission->bind();
+        if(sampler)
+            sampler->bind(4);
+        shader->set("material.emissive_map", 4);
+        shader->set("material.emissive_tint", emission_tint);
+    }
+
+    void LitMaterial::deserialize(const nlohmann::json& data){
+        TintedMaterial::deserialize(data);
+        if(!data.is_object()) return;
+        albedo = AssetLoader<Texture2D>::get(data.value("albedo", ""));
+        specular = AssetLoader<Texture2D>::get(data.value("specular", ""));
+        roughness = AssetLoader<Texture2D>::get(data.value("roughness", ""));
+        ambient_occlusion = AssetLoader<Texture2D>::get(data.value("ambient_occlusion", ""));
+        emission = AssetLoader<Texture2D>::get(data.value("emissive", ""));
+        albedo_tint = data.value("albedo_tint", glm::vec3(1.0f, 1.0f, 1.0f));
+        specular_tint = data.value("specular_tint", glm::vec3(1.0f, 1.0f, 1.0f));
+        roughness_range = data.value("roughness_range", glm::vec2(0.0f, 1.0f));
+        emission_tint = data.value("emissive_tint", glm::vec3(1.0f, 1.0f, 1.0f));
+    }
 }

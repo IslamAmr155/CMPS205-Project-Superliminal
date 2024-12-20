@@ -215,8 +215,8 @@ namespace our
 
             glm::vec3 current_sensitivity = controller->positionSensitivity;
             // If the LEFT SHIFT key is pressed, we multiply the position sensitivity by the speed up factor
-            if (app->getKeyboard().isPressed(GLFW_KEY_LEFT_SHIFT))
-                current_sensitivity *= controller->speedupFactor;
+            // if (app->getKeyboard().isPressed(GLFW_KEY_LEFT_SHIFT))
+            //     current_sensitivity *= controller->speedupFactor;
 
             // We change the camera position based on the keys WASD/QE
             // S & W moves the player back and forth

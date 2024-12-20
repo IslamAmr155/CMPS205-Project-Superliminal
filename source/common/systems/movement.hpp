@@ -4,6 +4,7 @@
 #include "../components/movement.hpp"
 #include "../components/rigid-body.hpp"
 #include "../components/free-camera-controller.hpp"
+#include "../global/global.hpp"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/constants.hpp>
@@ -86,7 +87,7 @@ namespace our
                 if (rigidBody)
                 {
                     r3d::Transform transform = rigidBody->getRigidBody()->getTransform();
-                    transform.setPosition(transform.getPosition() - rigidBody->relativePosition);
+                    transform.setPosition(transform.getPosition() + rigidBody->relativePosition);
 
                     FreeCameraControllerComponent *controller = entity->getComponent<FreeCameraControllerComponent>();
                     if (controller)
@@ -103,6 +104,22 @@ namespace our
                         rigidBody->getRigidBody()->setAngularVelocity(r3d::Vector3(0, 0, 0));
                     }
                     entity->localTransform.setTransform(transform);
+                }
+
+                // Update the pressed buttons if there are any
+                if (entity->name == "Button 7ooda")
+                {
+                    // If the button has been pressed
+                    if (getMyGameTime() - entity->lastContactTime > 0.2f && entity->delta > 0.0f)
+                    {
+                        // If the button has been pressed for more than 0.2 seconds
+                        // Move the button back to its original position
+                        r3d::Vector3 position = entity->localTransform.getPosition();
+                        auto rigidBody = entity->getComponent<RigidBodyComponent>()->getRigidBody();
+                        rigidBody->setTransform(r3d::Transform(r3d::Vector3(position.x, position.y + 0.01f, position.z), rigidBody->getTransform().getOrientation()));
+                        entity->localTransform.setPosition(glm::vec3(position.x, position.y + 0.01f, position.z));
+                        entity->delta -= 0.01f;
+                    }
                 }
             }
         }

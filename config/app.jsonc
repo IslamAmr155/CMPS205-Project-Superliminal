@@ -1396,10 +1396,12 @@
                     {
                         "type": "Rigid Body",
                         "rb_type": "Dynamic",
+                        "allowedToSleep": false,    // sleeping technique is used to disable the simulation of resting bodies.
                         "collider": {
                             "type": "Box Collider",
                             "halfExtents": [0.25, 0.25, 0.25],
-                            "bounciness": 0.2
+                            "bounciness": 0,
+                            "massDensity": 100
                         },
                         // "relativePosition": [0, -1, 0]
                         "enableGravity": true
@@ -1443,6 +1445,7 @@
                             "type": "Box Collider",
                             "halfExtents": [0.8, 0.5, 0.8],
                             "bounciness": 0.0
+                            
                         },
                         "enableGravity": true
                     }
@@ -1488,7 +1491,7 @@
                         "rb_type": "Static",
                         "collider": {
                             "type": "Box Collider",
-                            "halfExtents": [5, 5, 0.1],
+                            "halfExtents": [5, 5, 1],
                             "bounciness": 0.0
                         }
                     }
@@ -1508,7 +1511,7 @@
                         "rb_type": "Static",
                         "collider": {
                             "type": "Box Collider",
-                            "halfExtents": [5, 5, 0.1],
+                            "halfExtents": [5, 5, 1],
                             "bounciness": 0.0
                         }
                     }

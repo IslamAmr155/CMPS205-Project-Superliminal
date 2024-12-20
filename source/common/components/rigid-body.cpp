@@ -35,7 +35,7 @@ namespace our {
         rigidBody->enableGravity(data.value("enableGravity", false));
 
         // The purpose of the sleeping technique is to deactivate resting bodies so that they are not simulated anymore. This is used to save computation time because simulating many bodies is costly. A sleeping body (or group of sleeping bodies) is awaken as soon as another body collides with it or a joint in which it is involed is enabled. The sleeping technique is enabled by default.
-        rigidBody->setIsAllowedToSleep(data.value("allowedToSleep", true));
+        rigidBody->setIsAllowedToSleep(data.value("allowedToSleep", false));
 
         const glm::vec3 motionAxis = data.value("motionAxis", glm::vec3(1.0f, 1.0f, 1.0f));
         rigidBody->setLinearLockAxisFactor(r3d::Vector3(motionAxis.x, motionAxis.y, motionAxis.z));

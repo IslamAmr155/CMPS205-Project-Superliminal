@@ -57,6 +57,7 @@ namespace our {
 
         // Get the collider type
         const std::string type = data.value("type", "Box Collider");
+        this->colliderType = type;
 
         // Create the collision shape
         r3d::CollisionShape* collisionShape = nullptr;
@@ -64,16 +65,20 @@ namespace our {
         if (type == "Box Collider") {
             // Parse the half extents. The half extents represent the shape of the collider
             const glm::vec3 halfExtents = data.value("halfExtents", glm::vec3(1.0f));
+            this->halfExtents = halfExtents;
             collisionShape = physicsCommon.createBoxShape(r3d::Vector3(halfExtents.x, halfExtents.y, halfExtents.z));
         } else if (type == "Sphere Collider") {
             // Parse the radius
             const r3d::decimal radius = data.value("radius", 1.0f);
+            this->radius = radius;
             collisionShape = physicsCommon.createSphereShape(radius);
         } else if (type == "Capsule Collider") {
             // Parse the radius
             const r3d::decimal radius = data.value("radius", 1.0f);
+            this->radius = radius;
             // Parse the height
             const r3d::decimal height = data.value("height", 1.0f);
+            this->height = height;
             collisionShape = physicsCommon.createCapsuleShape(radius, height);
         }
 

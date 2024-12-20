@@ -117,6 +117,13 @@ namespace our
                 if (camera && controller)
                     break;
             }
+            for (auto entity : world->getEntities())
+            {
+                if (entity->name == "chair") {
+                    r3d::Vector3 pos = entity->localTransform.getPosition();
+                    // std::cout << "Chair position: " << pos.x << " " << pos.y << " " << pos.z << std::endl;
+                }
+            }
             // If there is no entity with both a CameraComponent and a FreeCameraControllerComponent, we can do nothing so we return
             if (!(camera && controller))
                 return;
@@ -276,7 +283,6 @@ namespace our
 
                 r3d::Vector3 endPosition = cameraPosition + r3d::Vector3(front.x, front.z * glm::tan(eulerAngles.x), front.z) * 100;
 
-
                 r3d::Vector3 hitPoint;
 
                 // Create a raycast callback object
@@ -319,28 +325,60 @@ namespace our
                     // pickedEntity->getComponent<RigidBodyComponent>()->getRigidBody()->enableGravity(false);
                 } else if (!picked && pickedEntity && pickedEntity->pickable) {
                     pickedEntity->getComponent<RigidBodyComponent>()->getRigidBody()->setType(r3d::BodyType::DYNAMIC);
-                    glm::vec3 newPosition = glm::vec3(hitPoint.x, hitPoint.y, hitPoint.z) - glm::vec3(front.x, front.y, front.z) * 1.5f * previousScale.x;
                     // std::cout << "New Position: " << newPosition.x << " " << newPosition.y << " " << newPosition.z << std::endl;
-                    newPosition.y = hitPoint.y;
-                    newPosition.x = hitPoint.x;
-                    newPosition.z = hitPoint.z;
                     float scaleRatio = distance / originalDistance;
                     
                     // glm::mat4 localToWorld = pickedEntity->getLocalToWorldMatrix();
                     r3d::Transform transform;
-                    transform.setPosition(r3d::Vector3(newPosition.x, newPosition.y, newPosition.z));
                     transform.setOrientation(pickedEntity->localTransform.getOrientation());
                     // transform.setPosition(r3d::Vector3(localToWorld[3][0], localToWorld[3][1], localToWorld[3][2]));
                     
                     glm::vec3 newScale(scaleRatio, scaleRatio, scaleRatio);
                     newScale *= previousScale;
-                    
+
+                    glm::vec3 newPosition = glm::vec3(hitPoint.x, hitPoint.y, hitPoint.z) - glm::vec3(front.x, front.y, front.z) * 1.5f * newScale.x;
+                    std::cout << "Hit Point: " << hitPoint.x << " " << hitPoint.y << " " << hitPoint.z << std::endl;
+                    std::cout << "New Position: " << newPosition.x << " " << newPosition.y << " " << newPosition.z << std::endl;
+                    transform.setPosition(r3d::Vector3(newPosition.x, newPosition.y, newPosition.z));
+
+                    pickedEntity->getComponent<RigidBodyComponent>()->halfExtents *= scaleRatio;
+                    pickedEntity->getComponent<RigidBodyComponent>()->radius *= scaleRatio;
+                    pickedEntity->getComponent<RigidBodyComponent>()->height *= scaleRatio;
+
+                    const std::string type = pickedEntity->getComponent<RigidBodyComponent>()->colliderType;
+
+                    r3d::PhysicsCommon& physicsCommon = pickedEntity->getWorld()->getPhysicsCommon();
+
+                    // Create the collision shape
+                    r3d::CollisionShape* collisionShape = nullptr;
+
+                    if (type == "Box Collider") {
+                        // Parse the half extents. The half extents represent the shape of the collider
+                        const glm::vec3 halfExtents = pickedEntity->getComponent<RigidBodyComponent>()->halfExtents;
+                        collisionShape = physicsCommon.createBoxShape(r3d::Vector3(halfExtents.x, halfExtents.y, halfExtents.z));
+                    } else if (type == "Sphere Collider") {
+                        // Parse the radius
+                        const r3d::decimal radius = pickedEntity->getComponent<RigidBodyComponent>()->radius;
+                        collisionShape = physicsCommon.createSphereShape(radius);
+                    } else if (type == "Capsule Collider") {
+                        // Parse the radius
+                        const r3d::decimal radius = pickedEntity->getComponent<RigidBodyComponent>()->radius;
+                        // Parse the height
+                        const r3d::decimal height = pickedEntity->getComponent<RigidBodyComponent>()->height;
+                        collisionShape = physicsCommon.createCapsuleShape(radius, height);
+                    }
+
                     // pickedEntity->localTransform.setTransform(transform);
                     // pickedEntity->deleteComponent<RigidBodyComponent>();
                     pickedEntity->localTransform.setScale(newScale);
                     pickedEntity->localTransform.setPosition(newPosition);
                     // pickedEntity->addComponent<RigidBodyComponent>();
                     pickedEntity->getComponent<RigidBodyComponent>()->getRigidBody()->setTransform(transform);
+                    
+                    // Is the collider deleted or not?
+                    pickedEntity->getComponent<RigidBodyComponent>()->getRigidBody()->removeCollider(pickedEntity->getComponent<RigidBodyComponent>()->getRigidBody()->getCollider(0));
+                    pickedEntity->getComponent<RigidBodyComponent>()->collider = pickedEntity->getComponent<RigidBodyComponent>()->getRigidBody()->addCollider(collisionShape, r3d::Transform::identity());
+                    
                     pickedEntity->parent = previousParent;
                     pickedEntity = nullptr;
                 }

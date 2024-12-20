@@ -15,13 +15,18 @@ namespace our
     class RigidBodyComponent : public Component
     {
         r3d::RigidBody *rigidBody = nullptr;    // The actual body
-        r3d::Collider *collider = nullptr;      // The collider object that represents the collision physics of the rigid body.
 
         void deserialize_collider(const nlohmann::json &data);
 
     public:
         // The relative position of the rigid body
         r3d::Vector3 relativePosition;
+
+        r3d::Collider *collider = nullptr;      // The collider object that represents the collision physics of the rigid body.
+        std::string colliderType;
+        glm::vec3 halfExtents;
+        r3d::decimal radius;
+        r3d::decimal height;
 
         // The ID of this component type is "Rigid Body"
         static std::string getID() { return "Rigid Body"; }

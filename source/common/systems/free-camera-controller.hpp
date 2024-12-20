@@ -119,9 +119,9 @@ namespace our
             }
             for (auto entity : world->getEntities())
             {
-                if (entity->name == "chair") {
+                if (entity->name == "Cube") {
                     r3d::Vector3 pos = entity->localTransform.getPosition();
-                    // std::cout << "Chair position: " << pos.x << " " << pos.y << " " << pos.z << std::endl;
+                    // std::cout << "Cube position: " << pos.x << " " << pos.y << " " << pos.z << std::endl;
                 }
             }
             // If there is no entity with both a CameraComponent and a FreeCameraControllerComponent, we can do nothing so we return
@@ -155,8 +155,8 @@ namespace our
 
             // If the left mouse button is pressed, we get the change in the mouse location
             // and use it to update the camera rotation
-            // if (app->getMouse().isPressed(GLFW_MOUSE_BUTTON_1))
-            // {
+            if (app->getMouse().isPressed(GLFW_MOUSE_BUTTON_1))
+            {
                 glm::vec2 delta = app->getMouse().getMouseDelta();
                 // rotation.x -= delta.y * controller->rotationSensitivity; // The y-axis controls the pitch
                 // rotation.y -= delta.x * controller->rotationSensitivity; // The x-axis controls the yaw
@@ -185,7 +185,7 @@ namespace our
 
                 rotation = yawQuat * rotation * pitchQuat; // Not sure about this order
                 rotation = glm::normalize(rotation);
-            // }
+            }
 
             // We prevent the pitch from exceeding a certain angle from the XZ plane to prevent gimbal locks
             // if (rotation.x < -glm::half_pi<float>() * 0.99f)
@@ -257,6 +257,8 @@ namespace our
             r3d::Ray ray(cameraPosition, endPosition);
 
             world->getPhysicsWorld()->raycast(ray, &raycastCallback);
+            std::cout << hitEntity->name << std::endl;
+
 
             // distance > 0 added just fr testing as this should never be the case in the game when the player is surrounded by the room
             if (picked && distance > 0 && distance < originalDistance) {
@@ -295,6 +297,7 @@ namespace our
                 world->getPhysicsWorld()->raycast(ray, &raycastCallback);
 
                 if (picked && pickedEntity->pickable) {
+                    std::cout << "Old Hit Point: " << hitPoint.x << " " << hitPoint.y << " " << hitPoint.z << std::endl;
                     // std::cout << "New Position: " << hitPoint.x << " " << hitPoint.y << " " << hitPoint.z << std::endl;
                     originalDistance = distance;
                     previousParent = pickedEntity->parent;
@@ -336,8 +339,9 @@ namespace our
                     glm::vec3 newScale(scaleRatio, scaleRatio, scaleRatio);
                     newScale *= previousScale;
 
-                    glm::vec3 newPosition = glm::vec3(hitPoint.x, hitPoint.y, hitPoint.z) - glm::vec3(front.x, front.y, front.z) * 1.5f * newScale.x;
-                    std::cout << "Hit Point: " << hitPoint.x << " " << hitPoint.y << " " << hitPoint.z << std::endl;
+                    // glm::vec3 newPosition = glm::vec3(hitPoint.x, hitPoint.y, hitPoint.z) - glm::vec3(front.x, front.y, front.z) * 1.5f * previousScale.x;
+                    glm::vec3 newPosition = glm::vec3(hitPoint.x, hitPoint.y, hitPoint.z);
+                    std::cout << "New Hit Point: " << hitPoint.x << " " << hitPoint.y << " " << hitPoint.z << std::endl;
                     std::cout << "New Position: " << newPosition.x << " " << newPosition.y << " " << newPosition.z << std::endl;
                     transform.setPosition(r3d::Vector3(newPosition.x, newPosition.y, newPosition.z));
 

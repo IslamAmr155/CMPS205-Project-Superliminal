@@ -1407,24 +1407,24 @@
                 ]
             },
             // Button
-            // {
-            //     "position": [1, -1, 0],
-            //     "rotation": [0, 0, 0],
-            //     "scale": [1, 1, 1],
-            //     "components": [
-            //         {
-            //             "type": "Mesh Renderer",
-            //             "mesh": "button_base",
-            //             "material": "button_base"
-            //         },
-            //         {
-            //             "type": "Rigid Body",
-            //             "rb_type": "Static"
-            //         }
-            //     ]
-            // },
             {
-                "name": "Button 7ooda",
+                "position": [1, -1, 0],
+                "rotation": [0, 0, 0],
+                "scale": [1, 1, 1],
+                "components": [
+                    {
+                        "type": "Mesh Renderer",
+                        "mesh": "button_base",
+                        "material": "button_base"
+                    }
+                    // {
+                    //     "type": "Rigid Body",
+                    //     "rb_type": "Static"
+                    // }
+                ]
+            },
+            {
+                "name": "Button",
                 "position": [1, -0.8, 0],
                 "rotation": [0, 0, 0],
                 "scale": [1, 1, 1],

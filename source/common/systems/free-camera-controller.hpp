@@ -92,7 +92,7 @@ namespace our
         bool mouse_locked = false; // Is the mouse locked
         Entity* pickedEntity = nullptr; // The entity that is currently picked
         bool picked = false; // Is the entity picked
-        float originalDistance; // The distance to the picked entity
+        float originalDistance, originalDistanceForCheckingDifferenceInDistance; // The distance to the picked entity
         Entity* previousParent = nullptr;
         glm::vec3 previousScale;
 
@@ -257,17 +257,18 @@ namespace our
             r3d::Ray ray(cameraPosition, endPosition);
 
             world->getPhysicsWorld()->raycast(ray, &raycastCallback);
-            std::cout << hitEntity->name << std::endl;
+            if (hitEntity->name != "")
+                std::cout << hitEntity->name << std::endl;
 
 
             // distance > 0 added just fr testing as this should never be the case in the game when the player is surrounded by the room
-            if (picked && distance > 0 && distance < originalDistance) {
+            if (picked && distance > 0 && distance < originalDistanceForCheckingDifferenceInDistance) {
                 r3d::Transform transform = pickedEntity->localTransform.getTransform();
                 transform.setPosition(r3d::Vector3(0,0,-distance*0.8f));
                 pickedEntity->localTransform.setTransform(transform);
                 pickedEntity->getComponent<RigidBodyComponent>()->getRigidBody()->setTransform(transform);
 
-                float scaleRatio = distance / originalDistance;
+                float scaleRatio = distance / originalDistanceForCheckingDifferenceInDistance;
                 glm::vec3 newScale = previousScale * scaleRatio;
                 pickedEntity->localTransform.setScale(newScale);
             }
@@ -297,13 +298,18 @@ namespace our
                 world->getPhysicsWorld()->raycast(ray, &raycastCallback);
 
                 if (picked && pickedEntity->pickable) {
+                    pickedEntity->getComponent<RigidBodyComponent>()->getRigidBody()->setType(r3d::BodyType::KINEMATIC);
                     std::cout << "Old Hit Point: " << hitPoint.x << " " << hitPoint.y << " " << hitPoint.z << std::endl;
                     // std::cout << "New Position: " << hitPoint.x << " " << hitPoint.y << " " << hitPoint.z << std::endl;
                     originalDistance = distance;
                     previousParent = pickedEntity->parent;
                     previousScale = pickedEntity->localTransform.getScale();
                     r3d::Transform transform;
-                    transform.setPosition(r3d::Vector3(0,0,-distance));
+
+                    glm::vec3 dimensions = pickedEntity->getComponent<RigidBodyComponent>()->halfExtents;
+                    float halfDimension = glm::length(dimensions) / 2.0f;
+                    originalDistanceForCheckingDifferenceInDistance = distance + halfDimension;
+                    transform.setPosition(r3d::Vector3(0,0,-distance - halfDimension));
 
                     // Retrieve the camera's orientation
                     r3d::Quaternion cameraOrientation = camera->getOwner()->localTransform.getOrientation();
@@ -321,12 +327,15 @@ namespace our
                     transform.setOrientation(r3d::Quaternion(invertedYAxisOrientation.x, invertedYAxisOrientation.y, invertedYAxisOrientation.z, invertedYAxisOrientation.w));
 
                     pickedEntity->localTransform.setTransform(transform);
-                    pickedEntity->getComponent<RigidBodyComponent>()->getRigidBody()->setType(r3d::BodyType::KINEMATIC);
                     pickedEntity->getComponent<RigidBodyComponent>()->getRigidBody()->setTransform(transform);
-                    // pickedEntity->getComponent<RigidBodyComponent>()->getRigidBody()->getCollider(0)->setLocalToBodyTransform(r3d::Transform::identity());
                     pickedEntity->parent = camera->getOwner();
-                    // pickedEntity->getComponent<RigidBodyComponent>()->getRigidBody()->enableGravity(false);
+                    pickedEntity->getComponent<RigidBodyComponent>()->getRigidBody()->setIsActive(false);
+                    // tempRigidBody = pickedEntity->getComponent<RigidBodyComponent>()->getRigidBody();
+                    // pickedEntity->getComponent<RigidBodyComponent>()->rigidBody = nullptr;
                 } else if (!picked && pickedEntity && pickedEntity->pickable) {
+                    pickedEntity->getComponent<RigidBodyComponent>()->getRigidBody()->setIsActive(true);
+                    // pickedEntity->getComponent<RigidBodyComponent>()->rigidBody = tempRigidBody;
+                    // std::cout << pickedEntity->getComponent<RigidBodyComponent>()->rigidBody << std::endl;
                     pickedEntity->getComponent<RigidBodyComponent>()->getRigidBody()->setType(r3d::BodyType::DYNAMIC);
                     // std::cout << "New Position: " << newPosition.x << " " << newPosition.y << " " << newPosition.z << std::endl;
                     float scaleRatio = distance / originalDistance;
@@ -339,15 +348,15 @@ namespace our
                     glm::vec3 newScale(scaleRatio, scaleRatio, scaleRatio);
                     newScale *= previousScale;
 
-                    // glm::vec3 newPosition = glm::vec3(hitPoint.x, hitPoint.y, hitPoint.z) - glm::vec3(front.x, front.y, front.z) * 1.5f * previousScale.x;
-                    glm::vec3 newPosition = glm::vec3(hitPoint.x, hitPoint.y, hitPoint.z);
+                    glm::vec3 newPosition = glm::vec3(hitPoint.x, hitPoint.y, hitPoint.z) - glm::vec3(front.x, front.y, front.z) * 0.5f;
+                    // glm::vec3 newPosition = glm::vec3(hitPoint.x, hitPoint.y, hitPoint.z);
                     std::cout << "New Hit Point: " << hitPoint.x << " " << hitPoint.y << " " << hitPoint.z << std::endl;
                     std::cout << "New Position: " << newPosition.x << " " << newPosition.y << " " << newPosition.z << std::endl;
                     transform.setPosition(r3d::Vector3(newPosition.x, newPosition.y, newPosition.z));
 
-                    pickedEntity->getComponent<RigidBodyComponent>()->halfExtents *= scaleRatio;
-                    pickedEntity->getComponent<RigidBodyComponent>()->radius *= scaleRatio;
-                    pickedEntity->getComponent<RigidBodyComponent>()->height *= scaleRatio;
+                    pickedEntity->getComponent<RigidBodyComponent>()->halfExtents = pickedEntity->getComponent<RigidBodyComponent>()->halfExtents * scaleRatio;
+                    pickedEntity->getComponent<RigidBodyComponent>()->radius = pickedEntity->getComponent<RigidBodyComponent>()->radius * scaleRatio;
+                    pickedEntity->getComponent<RigidBodyComponent>()->height = pickedEntity->getComponent<RigidBodyComponent>()->height * scaleRatio;
 
                     const std::string type = pickedEntity->getComponent<RigidBodyComponent>()->colliderType;
 
@@ -382,7 +391,7 @@ namespace our
                     // Is the collider deleted or not?
                     pickedEntity->getComponent<RigidBodyComponent>()->getRigidBody()->removeCollider(pickedEntity->getComponent<RigidBodyComponent>()->getRigidBody()->getCollider(0));
                     pickedEntity->getComponent<RigidBodyComponent>()->collider = pickedEntity->getComponent<RigidBodyComponent>()->getRigidBody()->addCollider(collisionShape, r3d::Transform::identity());
-                    
+
                     pickedEntity->parent = previousParent;
                     pickedEntity = nullptr;
                 }

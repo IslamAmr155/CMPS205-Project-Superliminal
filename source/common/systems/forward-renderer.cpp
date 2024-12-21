@@ -114,57 +114,58 @@ namespace our {
             delete postprocessMaterial->shader;
             delete postprocessMaterial;
         }
+        lights.clear();
     }
 
     // Helper function to set up all the light sources
-    void ForwardRenderer::setupLights(std::vector<LightComponent*> lights, ShaderProgram* shader) {
+    void ForwardRenderer::setupLights(const std::vector<LightComponent*>& lights, ShaderProgram* shader) {
         for(int i = 0; i < lights.size(); i++) {
             LightComponent* light = lights[i];
             std::string prefix = "lights[" + std::to_string(i) + "].";
-            printf("Setting up light %d\n", i);
+            // printf("Setting up light %d\n", i);
             shader->set(prefix + "type", (int)light->type);
-            printf("Type: %d\n", (int)light->type);
+            // printf("Type: %d\n", (int)light->type);
             shader->set(prefix + "color", light->color);
-            printf("Color: %f %f %f\n", light->color.x, light->color.y, light->color.z);
+            // printf("Color: %f %f %f\n", light->color.x, light->color.y, light->color.z);
             shader->set(prefix + "diffuse", light->diffuse);
-            printf("Diffuse: %f %f %f\n", light->diffuse.x, light->diffuse.y, light->diffuse.z);
+            // printf("Diffuse: %f %f %f\n", light->diffuse.x, light->diffuse.y, light->diffuse.z);
             shader->set(prefix + "specular", light->specular);
-            printf("Specular: %f %f %f\n", light->specular.x, light->specular.y, light->specular.z);
+            // printf("Specular: %f %f %f\n", light->specular.x, light->specular.y, light->specular.z);
             shader->set(prefix + "ambient", light->ambient);
-            printf("Ambient: %f %f %f\n", light->ambient.x, light->ambient.y, light->ambient.z);
+            // printf("Ambient: %f %f %f\n", light->ambient.x, light->ambient.y, light->ambient.z);
             r3d::Vector3 position = light->getOwner()->localTransform.getPosition();
             glm::vec3 positionVec = glm::vec3(position.x, position.y, position.z);
             switch (light->type) {
                 case LightComponent::Type::DIRECTIONAL:
                     shader->set(prefix + "direction", glm::normalize(light->direction));
-                    printf("Direction: %f %f %f\n", light->direction.x, light->direction.y, light->direction.z);
+                    // printf("Direction: %f %f %f\n", light->direction.x, light->direction.y, light->direction.z);
                     break;
                 case LightComponent::Type::POINT:
                     shader->set(prefix + "position", positionVec);
-                    printf("Position: %f %f %f\n", light->position.x, light->position.y, light->position.z);
+                    // printf("Position: %f %f %f\n", light->position.x, light->position.y, light->position.z);
                     shader->set(prefix + "attenuation.constant", light->attenuation.constant);
                     shader->set(prefix + "attenuation.linear", light->attenuation.linear);
                     shader->set(prefix + "attenuation.quadratic", light->attenuation.quadratic);
-                    printf("Attenuation: %f %f %f\n", light->attenuation.constant, light->attenuation.linear, light->attenuation.quadratic);
+                    // printf("Attenuation: %f %f %f\n", light->attenuation.constant, light->attenuation.linear, light->attenuation.quadratic);
                     break;
                 case LightComponent::Type::SPOT:
                     shader->set(prefix + "position", positionVec);
-                    printf("Position: %f %f %f\n", light->position.x, light->position.y, light->position.z);
+                    // printf("Position: %f %f %f\n", light->position.x, light->position.y, light->position.z);
                     shader->set(prefix + "direction", glm::normalize(light->direction));
-                    printf("Direction: %f %f %f\n", light->direction.x, light->direction.y, light->direction.z);
+                    // printf("Direction: %f %f %f\n", light->direction.x, light->direction.y, light->direction.z);
                     shader->set(prefix + "attenuation.constant", light->attenuation.constant);
                     shader->set(prefix + "attenuation.linear", light->attenuation.linear);
                     shader->set(prefix + "attenuation.quadratic", light->attenuation.quadratic);
-                    printf("Attenuation: %f %f %f\n", light->attenuation.constant, light->attenuation.linear, light->attenuation.quadratic);
+                    // printf("Attenuation: %f %f %f\n", light->attenuation.constant, light->attenuation.linear, light->attenuation.quadratic);
                     shader->set(prefix + "spot_angle.inner", light->spot_angle.inner);
-                    printf("Spot Angle Inner: %f\n", light->spot_angle.inner);
+                    // printf("Spot Angle Inner: %f\n", light->spot_angle.inner);
                     shader->set(prefix + "spot_angle.outer", light->spot_angle.outer);
-                    printf("Spot Angle Outer: %f\n", light->spot_angle.outer);
+                    // printf("Spot Angle Outer: %f\n", light->spot_angle.outer);
                     break;
             }
         }
         shader->set("lightCount", (int)lights.size());
-        printf("Light count: %d\n", (int)lights.size());
+        // printf("Light count: %d\n", (int)lights.size());
     }
 
     void ForwardRenderer::render(World* world){
@@ -191,9 +192,11 @@ namespace our {
                     opaqueCommands.push_back(command);
                 }
             }
-            // If this entity has a light component
-            if(auto light = entity->getComponent<LightComponent>(); light){
-                lights.push_back(light);
+            if(this->initialized == false) {
+                // If this entity has a light component
+                if(auto light = entity->getComponent<LightComponent>(); light){
+                    lights.push_back(light);
+                }
             }
         }
 

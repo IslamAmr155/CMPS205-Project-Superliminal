@@ -150,7 +150,7 @@ namespace our
                         auto contactPoint = pair.getContactPoint(j);
                         r3d::Vector3 normal = contactPoint.getWorldNormal();
 
-                        if (abs(normal.y) > 0.9f)
+                        if (abs(normal.y) > 0.9f && body2->getCollider(0)->getMaterial().getMassDensity() > 3.0f)
                         {
                             button->lastContactTime = getMyGameTime();
                             // printf("Button pressed at %f\n", button->lastContactTime);

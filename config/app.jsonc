@@ -256,7 +256,8 @@
                             "height": 2.0,
                             "bounciness": 0.0,
                             "friction": 1.0,
-                            "isTrigger": false              // is the collider a trigger (default is false)
+                            "isTrigger": false,              // is the collider a trigger (default is false)
+                            "massDensity": 5.0
                         }
                     }
                 ]
@@ -671,6 +672,7 @@
             },
             // Chamber walls 3
             {
+                "name": "wall 3",
                 "position": [5, 2, -4.3],
                 "rotation": [0, 90, 0],
                 "scale": [0.75, 1, 1],
@@ -691,6 +693,7 @@
                     }
                 ]
             },{
+                "name": "wall 3",
                 "position": [5, 2, -3],
                 "rotation": [0, 90, 0],
                 "scale": [0.95, 1, 1],
@@ -711,6 +714,7 @@
                     }
                 ]
             },{
+                "name": "wall 3",
                 "position": [5, 2, -1.5],
                 "rotation": [0, 90, 0],
                 "scale": [0.95, 1, 1],
@@ -731,6 +735,7 @@
                     }
                 ]
             },{
+                "name": "wall 3",
                 "position": [5, 2, 0],
                 "rotation": [0, 90, 0],
                 "scale": [0.95, 1, 1],
@@ -751,6 +756,7 @@
                     }
                 ]
             },{
+                "name": "wall 3",
                 "position": [5, 2, 1.5],
                 "rotation": [0, 90, 0],
                 "scale": [0.95, 1, 1],
@@ -771,6 +777,7 @@
                     }
                 ]
             },{
+                "name": "wall 3",
                 "position": [5, 2, 3],
                 "rotation": [0, 90, 0],
                 "scale": [0.95, 1, 1],
@@ -791,6 +798,7 @@
                     }
                 ]
             },{
+                "name": "wall 3",
                 "position": [5, 2, 4.3],
                 "rotation": [0, 90, 0],
                 "scale": [0.75, 1, 1],
@@ -813,6 +821,7 @@
             },
             // Chamber walls 4
             {
+                "name": "wall 4",
                 "position": [-5, 2, -4.3],
                 "rotation": [0, 90, 0],
                 "scale": [0.75, 1, 1],
@@ -827,12 +836,13 @@
                         "rb_type": "Static",
                         "collider": {
                             "type": "Box Collider",
-                            "halfExtents": [1, 5, 0.1],
+                            "halfExtents": [1, 5, 0.5],
                             "bounciness": 0.0
                         }
                     }
                 ]
             },{
+                "name": "wall 4",
                 "position": [-5, 2, -3],
                 "rotation": [0, 90, 0],
                 "scale": [0.95, 1, 1],
@@ -847,12 +857,13 @@
                         "rb_type": "Static",
                         "collider": {
                             "type": "Box Collider",
-                            "halfExtents": [1, 5, 0.1],
+                            "halfExtents": [1, 5, 0.5],
                             "bounciness": 0.0
                         }
                     }
                 ]
             },{
+                "name": "wall 4",
                 "position": [-5, 2, -1.5],
                 "rotation": [0, 90, 0],
                 "scale": [0.95, 1, 1],
@@ -867,12 +878,13 @@
                         "rb_type": "Static",
                         "collider": {
                             "type": "Box Collider",
-                            "halfExtents": [1, 5, 0.1],
+                            "halfExtents": [1, 5, 0.5],
                             "bounciness": 0.0
                         }
                     }
                 ]
             },{
+                "name": "wall 4",
                 "position": [-5, 4.5, 0],
                 "rotation": [0, 90, 0],
                 "scale": [0.95, 1, 1],
@@ -887,12 +899,13 @@
                         "rb_type": "Static",
                         "collider": {
                             "type": "Box Collider",
-                            "halfExtents": [1, 0.1, 0.1],
+                            "halfExtents": [1, 0.1, 0.5],
                             "bounciness": 0.0
                         }
                     }
                 ]
             },{
+                "name": "wall 4",
                 "position": [-5, 2, 1.5],
                 "rotation": [0, 90, 0],
                 "scale": [0.95, 1, 1],
@@ -907,12 +920,13 @@
                         "rb_type": "Static",
                         "collider": {
                             "type": "Box Collider",
-                            "halfExtents": [1, 5, 0.1],
+                            "halfExtents": [1, 5, 0.5],
                             "bounciness": 0.0
                         }
                     }
                 ]
             },{
+                "name": "wall 4",
                 "position": [-5, 2, 3],
                 "rotation": [0, 90, 0],
                 "scale": [0.95, 1, 1],
@@ -927,12 +941,13 @@
                         "rb_type": "Static",
                         "collider": {
                             "type": "Box Collider",
-                            "halfExtents": [1, 5, 0.1],
+                            "halfExtents": [1, 5, 0.5],
                             "bounciness": 0.0
                         }
                     }
                 ]
             },{
+                "name": "wall 4",
                 "position": [-5, 2, 4.5],
                 "rotation": [0, 90, 0],
                 "scale": [0.95, 1, 1],
@@ -947,7 +962,7 @@
                         "rb_type": "Static",
                         "collider": {
                             "type": "Box Collider",
-                            "halfExtents": [1, 5, 0.1],
+                            "halfExtents": [1, 5, 0.5],
                             "bounciness": 0.0
                         }
                     }
@@ -1239,6 +1254,7 @@
             },
             // Chamber walls 7
             {
+                "name": "wall 7",
                 "position": [-15, 2, -4.5],
                 "rotation": [0, 90, 0],
                 "scale": [0.95, 1, 1],
@@ -1260,6 +1276,7 @@
                 ]
             },
             {
+                "name": "wall 7",
                 "position": [-15, 2, -3],
                 "rotation": [0, 90, 0],
                 "scale": [0.95, 1, 1],
@@ -1280,6 +1297,7 @@
                     }
                 ]
             },{
+                "name": "wall 7",
                 "position": [-15, 2, -1.5],
                 "rotation": [0, 90, 0],
                 "scale": [0.95, 1, 1],
@@ -1300,6 +1318,7 @@
                     }
                 ]
             },{
+                "name": "wall 7",
                 "position": [-15, 2, 0],
                 "rotation": [0, 90, 0],
                 "scale": [0.95, 1, 1],
@@ -1320,6 +1339,7 @@
                     }
                 ]
             },{
+                "name": "wall 7",
                 "position": [-15, 2, 1.5],
                 "rotation": [0, 90, 0],
                 "scale": [0.95, 1, 1],
@@ -1340,6 +1360,7 @@
                     }
                 ]
             },{
+                "name": "wall 7",
                 "position": [-15, 2, 3],
                 "rotation": [0, 90, 0],
                 "scale": [0.95, 1, 1],
@@ -1360,6 +1381,7 @@
                     }
                 ]
             },{
+                "name": "wall 7",
                 "position": [-15, 2, 4.5],
                 "rotation": [0, 90, 0],
                 "scale": [0.95, 1, 1],
@@ -1401,7 +1423,7 @@
                             "type": "Box Collider",
                             "halfExtents": [0.25, 0.25, 0.25],
                             "bounciness": 0,
-                            "massDensity": 100
+                            "massDensity": 1
                         },
                         // "relativePosition": [0, -1, 0]
                         "enableGravity": true

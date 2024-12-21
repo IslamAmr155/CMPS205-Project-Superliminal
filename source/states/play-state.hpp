@@ -22,6 +22,12 @@ class Playstate: public our::State {
 
     void onInitialize() override {
         world.win = false;
+        cameraController.pickedEntity = nullptr;
+        cameraController.picked = false;
+        cameraController.originalDistance = 0.0f;
+        cameraController.previousParent = nullptr;
+        cameraController.previousScale = glm::vec3(1.0f);
+        cameraController.currentScaleRatio = 1.0f;
 
         // First of all, we get the scene configuration from the app config
         auto& config = getApp()->getConfig()["scene"];

@@ -256,7 +256,8 @@
                             "height": 2.0,
                             "bounciness": 0.0,
                             "friction": 1.0,
-                            "isTrigger": false              // is the collider a trigger (default is false)
+                            "isTrigger": false,              // is the collider a trigger (default is false)
+                            "massDensity": 10.0
                         }
                     }
                 ]
@@ -1406,7 +1407,8 @@
             // Toy block
             {
                 "name": "Cube",
-               "position": [3, -0.5, 0],
+                "position": [3, -0.5, 0],
+                "pickable": true,
                 "rotation": [0, 0, 0],
                 "scale": [5, 5, 5],
                 "components": [
@@ -1500,7 +1502,7 @@
             },
             {
                 "name": "door",
-                "position": [-5, 10, 0],
+                "position": [-5, 0, 0],
                 "rotation": [0, 90, 0],
                 "scale": [1.2, 1.0, 1.2],
                 "components": [
@@ -1532,6 +1534,14 @@
                         "type": "Mesh Renderer",
                         "mesh": "plane",
                         "material": "ceiling"
+                    },{
+                        "type": "Rigid Body",
+                        "rb_type": "Static",
+                        "collider": {
+                            "type": "Box Collider",
+                            "halfExtents": [5, 5, 1],
+                            "bounciness": 0.0
+                        }
                     }
                 ]
             },{
@@ -1543,6 +1553,14 @@
                         "type": "Mesh Renderer",
                         "mesh": "plane",
                         "material": "ceiling"
+                    },{
+                        "type": "Rigid Body",
+                        "rb_type": "Static",
+                        "collider": {
+                            "type": "Box Collider",
+                            "halfExtents": [5, 5, 1],
+                            "bounciness": 0.0
+                        }
                     }
                 ]
             }

@@ -73,7 +73,7 @@ class RaycastCollision : public r3d::RaycastCallback
                 continueRaycast = 0.0;
                 // std::cout << "Hit entity if picked: " << hitEntity->name << std::endl;
             } else {
-                continueRaycast = -1.0;
+                continueRaycast = 0.0;
                 // std::cout << "Hit entity: " << hitEntity->name << std::endl;
             }
         }
@@ -93,14 +93,15 @@ namespace our
     {
         Application *app;          // The application in which the state runs
         bool mouse_locked = false; // Is the mouse locked
+
+
+    public:
         Entity* pickedEntity = nullptr; // The entity that is currently picked
         bool picked = false; // Is the entity picked
-        float originalDistance, originalDistanceForCheckingDifferenceInDistance; // The distance to the picked entity
+        float originalDistance; // The distance to the picked entity
         Entity* previousParent = nullptr;
         glm::vec3 previousScale;
         float maximumScaleRatio = 5.0f, currentScaleRatio = 1.0f, minimumScaleRatio = 0.1f;
-
-    public:
         // When a state enters, it should call this function and give it the pointer to the application
         void enter(Application *app)
         {
@@ -261,8 +262,8 @@ namespace our
             r3d::Ray ray(cameraPosition, endPosition);
 
             world->getPhysicsWorld()->raycast(ray, &raycastCallback);
-            // if (hitEntity->name != "")
-            //     std::cout << hitEntity->name << std::endl;
+            if (hitEntity->name != "")
+                std::cout << hitEntity->name << std::endl;
 
 
             // distance > 0 added just fr testing as this should never be the case in the game when the player is surrounded by the room
@@ -312,7 +313,6 @@ namespace our
 
                     glm::vec3 dimensions = pickedEntity->getComponent<RigidBodyComponent>()->halfExtents;
                     float halfDimension = glm::length(dimensions) / 2.0f;
-                    originalDistanceForCheckingDifferenceInDistance = distance + halfDimension;
                     transform.setPosition(r3d::Vector3(0,0,-distance * 0.8f));
 
                     // Retrieve the camera's orientation

@@ -17,7 +17,12 @@ class Playstate: public our::State {
     our::FreeCameraControllerSystem cameraController;
     our::MovementSystem movementSystem;
 
+    float timeOffset;
+    float lastTime;
+
     void onInitialize() override {
+        world.win = false;
+
         // First of all, we get the scene configuration from the app config
         auto& config = getApp()->getConfig()["scene"];
         // If we have assets in the scene config, we deserialize them
@@ -39,7 +44,8 @@ class Playstate: public our::State {
         renderer.initialize(size, config["renderer"]);
 
         // Start the game time
-        printf("Time: %f\n", our::getMyGameTime());
+        timeOffset = our::getMyGameTime();
+        lastTime = timeOffset;
     }
 
     void onDraw(double deltaTime) override {
@@ -55,6 +61,18 @@ class Playstate: public our::State {
         if(keyboard.justPressed(GLFW_KEY_ESCAPE)){
             // If the escape  key is pressed in this frame, go to the play state
             getApp()->changeState("menu");
+        }
+
+        // Print the time every second incrementally
+        if(our::getMyGameTime() - lastTime > 1.0f){
+            printf("Time: %f\n", our::getMyGameTime() - timeOffset);
+            lastTime = our::getMyGameTime();
+        }
+        if(our::getMyGameTime() - timeOffset > 300.0f){
+            getApp()->changeState("try-again");
+        }
+        if(world.win){
+            getApp()->changeState("try-again");
         }
     }
 

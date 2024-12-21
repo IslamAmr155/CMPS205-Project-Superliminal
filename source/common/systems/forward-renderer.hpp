@@ -44,7 +44,7 @@ namespace our
 
         std::vector<LightComponent*> lights;
         // Helper function to intially set up all the light sources
-        void setupLights(std::vector<LightComponent*> lights, ShaderProgram* shader);
+        void setupLights(const std::vector<LightComponent*>& lights, ShaderProgram* shader);
     public:
         bool initialized = false;
         // Initialize the renderer including the sky and the Postprocessing objects.

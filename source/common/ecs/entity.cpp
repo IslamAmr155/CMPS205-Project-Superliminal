@@ -25,6 +25,7 @@ namespace our {
     void Entity::deserialize(const nlohmann::json& data){
         if(!data.is_object()) return;
         name = data.value("name", name);
+        isWin = data.value("isWin", isWin);
         localTransform.deserialize(data);
         pickable = data.value("pickable", pickable);
         if(data.contains("components")){

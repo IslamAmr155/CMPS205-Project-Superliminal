@@ -73,7 +73,7 @@ class RaycastCollision : public r3d::RaycastCallback
                 continueRaycast = 0.0;
                 // std::cout << "Hit entity if picked: " << hitEntity->name << std::endl;
             } else {
-                continueRaycast = 0.0;
+                continueRaycast = -1.0;
                 // std::cout << "Hit entity: " << hitEntity->name << std::endl;
             }
         }

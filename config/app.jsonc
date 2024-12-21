@@ -695,6 +695,7 @@
             },
             // Chamber walls 3
             {
+                "name": "wall 3",
                 "position": [5, 2, -4.3],
                 "rotation": [0, 90, 0],
                 "scale": [0.75, 1, 1],
@@ -715,6 +716,7 @@
                     }
                 ]
             },{
+                "name":"wall 3",
                 "position": [5, 2, -3],
                 "rotation": [0, 90, 0],
                 "scale": [0.95, 1, 1],
@@ -735,6 +737,7 @@
                     }
                 ]
             },{
+                "name":"wall 3",
                 "position": [5, 2, -1.5],
                 "rotation": [0, 90, 0],
                 "scale": [0.95, 1, 1],
@@ -755,6 +758,7 @@
                     }
                 ]
             },{
+                "name":"wall 3",
                 "position": [5, 2, 0],
                 "rotation": [0, 90, 0],
                 "scale": [0.95, 1, 1],
@@ -775,6 +779,7 @@
                     }
                 ]
             },{
+                "name":"wall 3",
                 "position": [5, 2, 1.5],
                 "rotation": [0, 90, 0],
                 "scale": [0.95, 1, 1],
@@ -795,6 +800,7 @@
                     }
                 ]
             },{
+                "name":"wall 3",
                 "position": [5, 2, 3],
                 "rotation": [0, 90, 0],
                 "scale": [0.95, 1, 1],
@@ -815,6 +821,7 @@
                     }
                 ]
             },{
+                "name":"wall 3",
                 "position": [5, 2, 4.3],
                 "rotation": [0, 90, 0],
                 "scale": [0.75, 1, 1],
@@ -837,6 +844,7 @@
             },
             // Chamber walls 4
             {
+                "name":"wall 4",
                 "position": [-5, 2, -4.3],
                 "rotation": [0, 90, 0],
                 "scale": [0.75, 1, 1],
@@ -857,6 +865,7 @@
                     }
                 ]
             },{
+                "name":"wall 4",
                 "position": [-5, 2, -3],
                 "rotation": [0, 90, 0],
                 "scale": [0.95, 1, 1],
@@ -877,6 +886,7 @@
                     }
                 ]
             },{
+                "name":"wall 4",
                 "position": [-5, 2, -1.5],
                 "rotation": [0, 90, 0],
                 "scale": [0.95, 1, 1],
@@ -897,6 +907,7 @@
                     }
                 ]
             },{
+                "name":"wall 4",
                 "position": [-5, 4.5, 0],
                 "rotation": [0, 90, 0],
                 "scale": [0.95, 1, 1],
@@ -917,6 +928,7 @@
                     }
                 ]
             },{
+                "name":"wall 4",
                 "position": [-5, 2, 1.5],
                 "rotation": [0, 90, 0],
                 "scale": [0.95, 1, 1],
@@ -937,6 +949,7 @@
                     }
                 ]
             },{
+                "name":"wall 4",
                 "position": [-5, 2, 3],
                 "rotation": [0, 90, 0],
                 "scale": [0.95, 1, 1],
@@ -957,6 +970,7 @@
                     }
                 ]
             },{
+                "name":"wall 4",
                 "position": [-5, 2, 4.5],
                 "rotation": [0, 90, 0],
                 "scale": [0.95, 1, 1],
@@ -1263,6 +1277,7 @@
             },
             // Chamber walls 7
             {
+                "name": "wall 7",
                 "position": [-15, 2, -4.5],
                 "rotation": [0, 90, 0],
                 "scale": [0.95, 1, 1],
@@ -1284,6 +1299,7 @@
                 ]
             },
             {
+                "name": "wall 7",
                 "position": [-15, 2, -3],
                 "rotation": [0, 90, 0],
                 "scale": [0.95, 1, 1],
@@ -1304,6 +1320,8 @@
                     }
                 ]
             },{
+                "name": "wall 7",
+
                 "position": [-15, 2, -1.5],
                 "rotation": [0, 90, 0],
                 "scale": [0.95, 1, 1],
@@ -1324,6 +1342,8 @@
                     }
                 ]
             },{
+                "name": "wall 7",
+
                 "position": [-15, 2, 0],
                 "rotation": [0, 90, 0],
                 "scale": [0.95, 1, 1],
@@ -1343,7 +1363,8 @@
                         }
                     }
                 ]
-            },{
+            },{                "name": "wall 7",
+
                 "position": [-15, 2, 1.5],
                 "rotation": [0, 90, 0],
                 "scale": [0.95, 1, 1],
@@ -1364,6 +1385,8 @@
                     }
                 ]
             },{
+                "name": "wall 7",
+
                 "position": [-15, 2, 3],
                 "rotation": [0, 90, 0],
                 "scale": [0.95, 1, 1],
@@ -1384,7 +1407,163 @@
                     }
                 ]
             },{
+                "name": "wall 7",
+
                 "position": [-15, 2, 4.5],
+                "rotation": [0, 90, 0],
+                "scale": [0.95, 1, 1],
+                "components": [
+                    {
+                        "type": "Mesh Renderer",
+                        "mesh": "chamber_wall",
+                        "material": "chamber_wall"
+                    },
+                    {
+                        "type": "Rigid Body",
+                        "rb_type": "Static",
+                        "collider": {
+                            "type": "Box Collider",
+                            "halfExtents": [1, 5, 0.1],
+                            "bounciness": 0.0
+                        }
+                    }
+                ]
+            },
+            // Chamber walls 8
+            {
+                "name": "wall 8",
+                "position": [-5, 2, -4.3],
+                "rotation": [0, 90, 0],
+                "scale": [0.75, 1, 1],
+                "components": [
+                    {
+                        "type": "Mesh Renderer",
+                        "mesh": "chamber_wall",
+                        "material": "chamber_wall"
+                    },
+                    {
+                        "type": "Rigid Body",
+                        "rb_type": "Static",
+                        "collider": {
+                            "type": "Box Collider",
+                            "halfExtents": [1, 5, 0.1],
+                            "bounciness": 0.0
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "wall 8",
+                "position": [-5, 2, -3],
+                "rotation": [0, 90, 0],
+                "scale": [0.95, 1, 1],
+                "components": [
+                    {
+                        "type": "Mesh Renderer",
+                        "mesh": "chamber_wall",
+                        "material": "chamber_wall"
+                    },
+                    {
+                        "type": "Rigid Body",
+                        "rb_type": "Static",
+                        "collider": {
+                            "type": "Box Collider",
+                            "halfExtents": [1, 5, 0.1],
+                            "bounciness": 0.0
+                        }
+                    }
+                ]
+            },{
+                "name": "wall 8",
+
+                "position": [-5, 2, -1.5],
+                "rotation": [0, 90, 0],
+                "scale": [0.95, 1, 1],
+                "components": [
+                    {
+                        "type": "Mesh Renderer",
+                        "mesh": "chamber_wall",
+                        "material": "chamber_wall"
+                    },
+                    {
+                        "type": "Rigid Body",
+                        "rb_type": "Static",
+                        "collider": {
+                            "type": "Box Collider",
+                            "halfExtents": [1, 5, 0.1],
+                            "bounciness": 0.0
+                        }
+                    }
+                ]
+            },{
+                "name": "wall 8",
+
+                "position": [-5, 4.5, 0],
+                "rotation": [0, 90, 0],
+                "scale": [0.95, 1, 1],
+                "components": [
+                    {
+                        "type": "Mesh Renderer",
+                        "mesh": "chamber_wall",
+                        "material": "chamber_wall"
+                    },
+                    {
+                        "type": "Rigid Body",
+                        "rb_type": "Static",
+                        "collider": {
+                            "type": "Box Collider",
+                            "halfExtents": [1, 0.1, 0.1],
+                            "bounciness": 0.0
+                        }
+                    }
+                ]
+            },{                "name": "wall 8",
+
+                "position": [-5, 2, 1.5],
+                "rotation": [0, 90, 0],
+                "scale": [0.95, 1, 1],
+                "components": [
+                    {
+                        "type": "Mesh Renderer",
+                        "mesh": "chamber_wall",
+                        "material": "chamber_wall"
+                    },
+                    {
+                        "type": "Rigid Body",
+                        "rb_type": "Static",
+                        "collider": {
+                            "type": "Box Collider",
+                            "halfExtents": [1, 5, 0.1],
+                            "bounciness": 0.0
+                        }
+                    }
+                ]
+            },{
+                "name": "wall 8",
+
+                "position": [-5, 2, 3],
+                "rotation": [0, 90, 0],
+                "scale": [0.95, 1, 1],
+                "components": [
+                    {
+                        "type": "Mesh Renderer",
+                        "mesh": "chamber_wall",
+                        "material": "chamber_wall"
+                    },
+                    {
+                        "type": "Rigid Body",
+                        "rb_type": "Static",
+                        "collider": {
+                            "type": "Box Collider",
+                            "halfExtents": [1, 5, 0.1],
+                            "bounciness": 0.0
+                        }
+                    }
+                ]
+            },{
+                "name": "wall 8",
+
+                "position": [-5, 2, 4.5],
                 "rotation": [0, 90, 0],
                 "scale": [0.95, 1, 1],
                 "components": [

@@ -42,17 +42,18 @@ class RaycastCollision : public r3d::RaycastCallback
         // std::cout << "Hit Point: " << hitPoint.x << " " << hitPoint.y << " " << hitPoint.z << std::endl;
         distance = glm::length(glmEndPoint - glmStartPoint) * info.hitFraction;
         r3d::Body* body = info.body;
+        r3d::Collider* collider = info.collider;
         r3d::decimal continueRaycast = info.hitFraction;
 
-        for (auto entity : world->getEntities()) {
-            auto rigidBody = entity->getComponent<our::RigidBodyComponent>();
-            if (picked && (entity->name == "wall 4" || entity->name == "wall 7")) 
-                std::cout << "Entity: " << entity->name << std::endl;
-            if (rigidBody && rigidBody->getRigidBody() == body) {
-                hitEntity = entity;
-                break;
-            }
-        }
+        // for (auto entity : world->getEntities()) {
+        //     auto rigidBody = entity->getComponent<our::RigidBodyComponent>(); 
+        //         // std::cout << "Entity: " << entity->name << std::endl;
+        //     if (rigidBody && rigidBody->getRigidBody()->getNbColliders() != 0 && rigidBody->getRigidBody()->getCollider(0) == collider) {
+        //         hitEntity = entity;
+        //         break;
+        //     }
+        // }
+        hitEntity = static_cast<our::Entity*>(body->getUserData());
 
         if (!testForDistance) {
             if (picked && hitEntity != pickedEntity) {
@@ -244,7 +245,7 @@ namespace our
             // If it is, take the minimum distance so that the held object is closer to us
 
             float distance = 0.0f;
-            Entity* hitEntity = nullptr;
+            Entity* hitEntityForDistance = nullptr;
             // Get the position of the camera
             r3d::Vector3 cameraPosition = camera->getOwner()->localTransform.getPosition();
 
@@ -257,13 +258,19 @@ namespace our
 
             r3d::Vector3 hitPoint;
 
-            RaycastCollision raycastCallback(cameraPosition, endPosition, picked, world, hitEntity, distance, pickedEntity, hitPoint);
+            glm::mat4 dummyMatrix = entity->localTransform.toMat4();
+
+            // TODO: needs revision
+            glm::vec3 dummyFront = glm::normalize(glm::vec3(matrix * glm::vec4(0, 0, -1, 0)));
+            endPosition  = cameraPosition + r3d::Vector3(dummyFront.x, dummyFront.y, dummyFront.z) * 100;
+
+            RaycastCollision raycastCallback(cameraPosition, endPosition, picked, world, hitEntityForDistance, distance, pickedEntity, hitPoint);
 
             r3d::Ray ray(cameraPosition, endPosition);
 
             world->getPhysicsWorld()->raycast(ray, &raycastCallback);
-            if (hitEntity->name != "")
-                std::cout << hitEntity->name << std::endl;
+            if (hitEntityForDistance->name != "")
+                std::cout << hitEntityForDistance->name << std::endl;
 
 
             // distance > 0 added just fr testing as this should never be the case in the game when the player is surrounded by the room
@@ -293,6 +300,12 @@ namespace our
 
                 r3d::Vector3 hitPoint;
 
+                glm::mat4 dummyMatrix = entity->localTransform.toMat4();
+
+                // TODO: needs revision
+                glm::vec3 dummyFront = glm::normalize(glm::vec3(matrix * glm::vec4(0, 0, -1, 0)));
+                endPosition  = cameraPosition + r3d::Vector3(dummyFront.x, dummyFront.y, dummyFront.z) * 100;
+
                 // Create a raycast callback object
                 RaycastCollision raycastCallback(cameraPosition, endPosition, picked, world, hitEntity, distance, pickedEntity, hitPoint, false);
 
@@ -315,38 +328,31 @@ namespace our
                     float halfDimension = glm::length(dimensions) / 2.0f;
                     transform.setPosition(r3d::Vector3(0,0,-distance * 0.8f));
 
-                    // Retrieve the camera's orientation
-                    r3d::Quaternion cameraOrientation = camera->getOwner()->localTransform.getOrientation();
+                    // // Retrieve the camera's orientation
+                    // r3d::Quaternion cameraOrientation = camera->getOwner()->localTransform.getOrientation();
 
-                    // Convert the quaternion to Euler angles to manipulate the y-axis rotation
-                    glm::vec3 eulerAngles = glm::eulerAngles(glm::quat(cameraOrientation.w, cameraOrientation.x, cameraOrientation.y, cameraOrientation.z));
+                    // // Convert the quaternion to Euler angles to manipulate the y-axis rotation
+                    // glm::vec3 eulerAngles = glm::eulerAngles(glm::quat(cameraOrientation.w, cameraOrientation.x, cameraOrientation.y, cameraOrientation.z));
 
-                    // Invert the y-axis rotation
-                    eulerAngles.y = -eulerAngles.y;
+                    // // Invert the y-axis rotation
+                    // eulerAngles.y = -eulerAngles.y;
 
-                    // Convert the Euler angles back to a quaternion
-                    glm::quat invertedYAxisOrientation = glm::quat(eulerAngles);
+                    // // Convert the Euler angles back to a quaternion
+                    // glm::quat invertedYAxisOrientation = glm::quat(eulerAngles);
 
-                    // Set the transform orientation to the new orientation
-                    transform.setOrientation(r3d::Quaternion(invertedYAxisOrientation.x, invertedYAxisOrientation.y, invertedYAxisOrientation.z, invertedYAxisOrientation.w));
+                    // // Set the transform orientation to the new orientation
+                    // transform.setOrientation(r3d::Quaternion(invertedYAxisOrientation.x, invertedYAxisOrientation.y, invertedYAxisOrientation.z, invertedYAxisOrientation.w));
 
                     pickedEntity->localTransform.setTransform(transform);
                     pickedEntity->getComponent<RigidBodyComponent>()->getRigidBody()->setTransform(transform);
                     pickedEntity->parent = camera->getOwner();
                     pickedEntity->getComponent<RigidBodyComponent>()->getRigidBody()->setIsActive(false);
-                    // tempRigidBody = pickedEntity->getComponent<RigidBodyComponent>()->getRigidBody();
-                    // pickedEntity->getComponent<RigidBodyComponent>()->rigidBody = nullptr;
                 } else if (!picked && pickedEntity && pickedEntity->pickable) {
                     pickedEntity->getComponent<RigidBodyComponent>()->getRigidBody()->setIsActive(true);
-                    // pickedEntity->getComponent<RigidBodyComponent>()->rigidBody = tempRigidBody;
-                    // std::cout << pickedEntity->getComponent<RigidBodyComponent>()->rigidBody << std::endl;
-                    // pickedEntity->getComponent<RigidBodyComponent>()->getRigidBody()->setType(r3d::BodyType::DYNAMIC);
+
                     float scaleRatio = distance / originalDistance;
                     
-                    // glm::mat4 localToWorld = pickedEntity->getLocalToWorldMatrix();
                     r3d::Transform transform;
-                    transform.setOrientation(pickedEntity->localTransform.getOrientation());
-                    // transform.setPosition(r3d::Vector3(localToWorld[3][0], localToWorld[3][1], localToWorld[3][2]));
                     
                     glm::vec3 newScale = previousScale;
                     if (currentScaleRatio * scaleRatio > maximumScaleRatio) {
@@ -357,10 +363,14 @@ namespace our
                     currentScaleRatio *= scaleRatio;
                     newScale *= scaleRatio;
 
+                    // glm::mat4 matrix = pickedEntity->getLocalToWorldMatrix();
+                    // glm::mat4 cameraMatrix = camera->getOwner()->getLocalToWorldMatrix();
+
+                    // glm::mat4 localToWorld = cameraMatrix * matrix;
+                    // pickedEntity->localTransform.setPosition(glm::vec3(localToWorld[3][0], localToWorld[3][1], localToWorld[3][2]));
+                    // transform.setPosition(r3d::Vector3(localToWorld[3][0], localToWorld[3][1], localToWorld[3][2]));
+
                     glm::vec3 newPosition = glm::vec3(hitPoint.x, hitPoint.y, hitPoint.z) - glm::vec3(front.x, front.y, front.z) * 0.5f;
-                    // std::cout << "New Position: " << newPosition.x << " " << newPosition.y << " " << newPosition.z << std::endl;
-                    // glm::vec3 newPosition = glm::vec3(hitPoint.x, hitPoint.y, hitPoint.z);
-                    transform.setPosition(r3d::Vector3(newPosition.x, newPosition.y, newPosition.z));
 
                     pickedEntity->getComponent<RigidBodyComponent>()->halfExtents = pickedEntity->getComponent<RigidBodyComponent>()->halfExtents * scaleRatio;
                     pickedEntity->getComponent<RigidBodyComponent>()->radius = pickedEntity->getComponent<RigidBodyComponent>()->radius * scaleRatio;
@@ -389,11 +399,9 @@ namespace our
                         collisionShape = physicsCommon.createCapsuleShape(radius, height);
                     }
 
-                    // pickedEntity->localTransform.setTransform(transform);
-                    // pickedEntity->deleteComponent<RigidBodyComponent>();
                     pickedEntity->localTransform.setScale(newScale);
                     pickedEntity->localTransform.setPosition(newPosition);
-                    // pickedEntity->addComponent<RigidBodyComponent>();
+                    transform.setPosition(r3d::Vector3(newPosition.x, newPosition.y, newPosition.z));
                     pickedEntity->getComponent<RigidBodyComponent>()->getRigidBody()->setTransform(transform);
                     
                     // Is the collider deleted or not?
@@ -401,7 +409,6 @@ namespace our
                     material.setMassDensity(material.getMassDensity() * scaleRatio);
                     pickedEntity->getComponent<RigidBodyComponent>()->getRigidBody()->removeCollider(pickedEntity->getComponent<RigidBodyComponent>()->getRigidBody()->getCollider(0));
                     pickedEntity->getComponent<RigidBodyComponent>()->collider = pickedEntity->getComponent<RigidBodyComponent>()->getRigidBody()->addCollider(collisionShape, r3d::Transform::identity());
-                    
                     pickedEntity->getComponent<RigidBodyComponent>()->collider->setMaterial(material);
 
                     pickedEntity->parent = previousParent;

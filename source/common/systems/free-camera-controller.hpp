@@ -316,44 +316,38 @@ namespace our
                 world->getPhysicsWorld()->raycast(ray, &raycastCallback);
 
                 if (picked && pickedEntity->pickable) {
-                    // pickedEntity->getComponent<RigidBodyComponent>()->getRigidBody()->setType(r3d::BodyType::KINEMATIC);
-                    // std::cout << "Old Hit Point: " << hitPoint.x << " " << hitPoint.y << " " << hitPoint.z << std::endl;
-                    // std::cout << "New Position: " << hitPoint.x << " " << hitPoint.y << " " << hitPoint.z << std::endl;
+                    // Store distance for finding scale ratio
                     originalDistance = distance;
+
+                    // Store previous parent and scale
                     previousParent = pickedEntity->parent;
                     previousScale = pickedEntity->localTransform.getScale();
+
+                    // Set the picked entity's transform according to the camera as a parent
                     r3d::Transform transform;
 
                     glm::vec3 dimensions = pickedEntity->getComponent<RigidBodyComponent>()->halfExtents;
                     float halfDimension = glm::length(dimensions) / 2.0f;
                     transform.setPosition(r3d::Vector3(0,0,-distance * 0.8f));
 
-                    // // Retrieve the camera's orientation
-                    // r3d::Quaternion cameraOrientation = camera->getOwner()->localTransform.getOrientation();
-
-                    // // Convert the quaternion to Euler angles to manipulate the y-axis rotation
-                    // glm::vec3 eulerAngles = glm::eulerAngles(glm::quat(cameraOrientation.w, cameraOrientation.x, cameraOrientation.y, cameraOrientation.z));
-
-                    // // Invert the y-axis rotation
-                    // eulerAngles.y = -eulerAngles.y;
-
-                    // // Convert the Euler angles back to a quaternion
-                    // glm::quat invertedYAxisOrientation = glm::quat(eulerAngles);
-
-                    // // Set the transform orientation to the new orientation
-                    // transform.setOrientation(r3d::Quaternion(invertedYAxisOrientation.x, invertedYAxisOrientation.y, invertedYAxisOrientation.z, invertedYAxisOrientation.w));
-
                     pickedEntity->localTransform.setTransform(transform);
                     pickedEntity->getComponent<RigidBodyComponent>()->getRigidBody()->setTransform(transform);
+
+                    // set the parent to the camera
                     pickedEntity->parent = camera->getOwner();
+
+                    // Deactivate rigid body while holding the object to avoid collisions with the object
                     pickedEntity->getComponent<RigidBodyComponent>()->getRigidBody()->setIsActive(false);
                 } else if (!picked && pickedEntity && pickedEntity->pickable) {
+                    // Activate the rigid body when the object is dropped
                     pickedEntity->getComponent<RigidBodyComponent>()->getRigidBody()->setIsActive(true);
 
+                    // Calculate the scale ratio
                     float scaleRatio = distance / originalDistance;
                     
                     r3d::Transform transform;
                     
+                    // Clamp the scale ratio to a max and min value
                     glm::vec3 newScale = previousScale;
                     if (currentScaleRatio * scaleRatio > maximumScaleRatio) {
                         scaleRatio = maximumScaleRatio / currentScaleRatio;
@@ -363,19 +357,15 @@ namespace our
                     currentScaleRatio *= scaleRatio;
                     newScale *= scaleRatio;
 
-                    // glm::mat4 matrix = pickedEntity->getLocalToWorldMatrix();
-                    // glm::mat4 cameraMatrix = camera->getOwner()->getLocalToWorldMatrix();
-
-                    // glm::mat4 localToWorld = cameraMatrix * matrix;
-                    // pickedEntity->localTransform.setPosition(glm::vec3(localToWorld[3][0], localToWorld[3][1], localToWorld[3][2]));
-                    // transform.setPosition(r3d::Vector3(localToWorld[3][0], localToWorld[3][1], localToWorld[3][2]));
-
+                    // Calculate the new position of the object
                     glm::vec3 newPosition = glm::vec3(hitPoint.x, hitPoint.y, hitPoint.z) - glm::vec3(front.x, front.y, front.z) * 0.5f;
 
+                    // Update dimensions of collider based on scale ratio
                     pickedEntity->getComponent<RigidBodyComponent>()->halfExtents = pickedEntity->getComponent<RigidBodyComponent>()->halfExtents * scaleRatio;
                     pickedEntity->getComponent<RigidBodyComponent>()->radius = pickedEntity->getComponent<RigidBodyComponent>()->radius * scaleRatio;
                     pickedEntity->getComponent<RigidBodyComponent>()->height = pickedEntity->getComponent<RigidBodyComponent>()->height * scaleRatio;
 
+                    // Create new collider based on the new dimensions
                     const std::string type = pickedEntity->getComponent<RigidBodyComponent>()->colliderType;
 
                     r3d::PhysicsCommon& physicsCommon = pickedEntity->getWorld()->getPhysicsCommon();
@@ -399,18 +389,24 @@ namespace our
                         collisionShape = physicsCommon.createCapsuleShape(radius, height);
                     }
 
+                    // Set the new scale and position of the object
                     pickedEntity->localTransform.setScale(newScale);
                     pickedEntity->localTransform.setPosition(newPosition);
+
+                    // Set the new transform of the rigid body
                     transform.setPosition(r3d::Vector3(newPosition.x, newPosition.y, newPosition.z));
                     pickedEntity->getComponent<RigidBodyComponent>()->getRigidBody()->setTransform(transform);
                     
-                    // Is the collider deleted or not?
+                    // Update mass density of the object
                     r3d::Material material = pickedEntity->getComponent<RigidBodyComponent>()->collider->getMaterial();
                     material.setMassDensity(material.getMassDensity() * scaleRatio);
+
+                    // Remove the old collider and add the new one
                     pickedEntity->getComponent<RigidBodyComponent>()->getRigidBody()->removeCollider(pickedEntity->getComponent<RigidBodyComponent>()->getRigidBody()->getCollider(0));
                     pickedEntity->getComponent<RigidBodyComponent>()->collider = pickedEntity->getComponent<RigidBodyComponent>()->getRigidBody()->addCollider(collisionShape, r3d::Transform::identity());
                     pickedEntity->getComponent<RigidBodyComponent>()->collider->setMaterial(material);
 
+                    // Set the parent back to the previous parent
                     pickedEntity->parent = previousParent;
                     pickedEntity = nullptr;
                 }

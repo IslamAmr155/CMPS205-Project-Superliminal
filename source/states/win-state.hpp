@@ -11,7 +11,7 @@
 #include <array>
 
 // This state shows how to use some of the abstractions we created to make a menu.
-class TryAgainState: public our::State {
+class WinState: public our::State {
 
     // A meterial holding the menu shader and the menu texture to draw
     our::TexturedMaterial* menuMaterial;
@@ -22,7 +22,7 @@ class TryAgainState: public our::State {
     // A variable to record the time since the state is entered (it will be used for the fading effect).
     float time;
     // An array of the button that we can interact with
-    std::array<Button, 3> buttons;
+    std::array<Button, 2> buttons;
 
     void onInitialize() override {
         // First, we create a material for the menu's background
@@ -33,7 +33,7 @@ class TryAgainState: public our::State {
         menuMaterial->shader->attach("assets/shaders/textured.frag", GL_FRAGMENT_SHADER);
         menuMaterial->shader->link();
         // Then we load the menu texture
-        menuMaterial->texture = our::texture_utils::loadImage("assets/textures/try_again.png");
+        menuMaterial->texture = our::texture_utils::loadImage("assets/textures/menu_superliminal_win.png");
         // Initially, the menu material will be black, then it will fade in
         menuMaterial->tint = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
 
@@ -76,17 +76,13 @@ class TryAgainState: public our::State {
         // - The argument list () which is the arguments that the lambda should receive when it is called.
         //      We leave it empty since button actions receive no input.
         // - The body {} which contains the code to be executed. 
-        buttons[0].position = {490.0f, 300.0f};
-        buttons[0].size = {400.0f, 80.0f};
+        buttons[0].position = {870.0f, 640.0f};
+        buttons[0].size = {410.0f, 40.0f};
         buttons[0].action = [this](){this->getApp()->changeState("play");};
 
-        buttons[1].position = {490.0f, 380.0f};
-        buttons[1].size = {400.0f, 80.0f};
-        buttons[1].action = [this](){this->getApp()->changeState("menu");};
-
-        buttons[2].position = {490.0f, 460.0f};
-        buttons[2].size = {400.0f, 80.0f};
-        buttons[2].action = [this](){this->getApp()->close();};
+        buttons[1].position = {870.0f, 680.0f};
+        buttons[1].size = {410.0f, 40.0f};
+        buttons[1].action = [this](){this->getApp()->close();};
     }
 
     void onDraw(double deltaTime) override {

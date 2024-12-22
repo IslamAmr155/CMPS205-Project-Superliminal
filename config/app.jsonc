@@ -245,7 +245,7 @@
                     {
                         "type": "Rigid Body",       // rigid body component for the player to allow collisions and physics interactions
                         "rb_type": "Dynamic",       // static body for the floor, a kinematic body for a moving platform and a dynamic body for a rock that could fall on the floor.
-                        "enableGravity": false,      // enable gravity for the player (default is true)
+                        "enableGravity": true,      // enable gravity for the player (default is true)
                         "allowedToSleep": false,    // sleeping technique is used to disable the simulation of resting bodies.
                         "rotationAxis": [1, 1, 1],
                         "motionAxis": [1, 1, 1],
@@ -2772,7 +2772,7 @@
             },
             // Button 2
             {
-                "name": "Button",
+                "name": "Win Button",
                 "position": [-20, 5.4, 0],
                 "rotation": [0, 0, 0],
                 "scale": [1, 1, 1],
@@ -2799,7 +2799,7 @@
             },
             {
                 "name": "door",
-                "position": [-5, 10, 0],
+                "position": [-5, 0, 0],
                 "rotation": [0, 90, 0],
                 "scale": [1.2, 1.0, 1.2],
                 "components": [

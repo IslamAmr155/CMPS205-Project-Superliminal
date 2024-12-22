@@ -69,10 +69,10 @@ class Playstate: public our::State {
             lastTime = our::getMyGameTime();
         }
         if(our::getMyGameTime() - timeOffset > 300.0f){
-            getApp()->changeState("try-again");
+            getApp()->changeState("lose-state");
         }
         if(world.win){
-            getApp()->changeState("try-again");
+            getApp()->changeState("win-state");
         }
     }
 

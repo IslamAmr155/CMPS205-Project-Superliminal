@@ -2772,7 +2772,7 @@
             },
             // Button 2
             {
-                "name": "Win Button",
+                "name": "Button",
                 "position": [-20, 5.4, 0],
                 "rotation": [0, 0, 0],
                 "scale": [1, 1, 1],
